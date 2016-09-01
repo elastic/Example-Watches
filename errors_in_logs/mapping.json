@@ -8,6 +8,10 @@
         },
         "message": {
           "type": "string"
+        },
+        "loglevel":{
+          "type": "string",
+          "index":"not_analyzed"
         }
       }
     }
