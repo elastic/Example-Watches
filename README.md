@@ -25,4 +25,4 @@ For each watch the following is provided:
 * Errors in log files - A watch which alerts if errors are present in a log file. Provides example errors as output.
 * Port Scan - A watch which aims to detect and alert if a server established a high number of connections to a destination across a large number of ports.
 * Social Media Trending - A watch which alerts if a social media topic/tag begins to show increase activity
-* Unexpected AD/LDAP Activity - A watch which aims detect and to alert if a user is created in Active Directory and subsequently deleted within N mins.
+* Unexpected Account Activity - A watch which aims detect and to alert if a user is created in Active Directory/LDAP and subsequently deleted within N mins.
