@@ -1,0 +1,22 @@
+{
+  "mappings": {
+    "log": {
+      "properties": {
+        "source_dest": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "source_dest_port": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "port": {
+          "type": "integer"
+        },
+        "@timestamp":{
+          "type":"date"
+        }
+      }
+    }
+  }
+}
