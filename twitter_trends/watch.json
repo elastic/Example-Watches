@@ -1,0 +1,81 @@
+{
+  "metadata": {
+    "bucket_interval": "5m",
+    "time_period": "12h",
+    "query_tag": "elasticsearch"
+  },
+  "trigger": {
+    "schedule": {
+      "interval": "5m"
+    }
+  },
+  "input": {
+    "search": {
+      "request": {
+        "indices": "twitter*",
+        "body": {
+          "query": {
+            "filtered": {
+              "query": {
+                "query_string": {
+                  "query": "entities.hashtags.text: {{ctx.metadata.query_tag}}",
+                  "analyze_wildcard": true
+                }
+              },
+              "filter": {
+                "bool": {
+                  "must": [
+                    {
+                      "range": {
+                        "@timestamp": {
+                          "gte": "now-{{ctx.metadata.time_period}}",
+                          "format": "epoch_millis"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "size": 0,
+          "aggs": {
+            "date_buckets": {
+              "date_histogram": {
+                "field": "@timestamp",
+                "interval": "{{ctx.metadata.bucket_interval}}",
+                "min_doc_count": 0
+              }
+            },
+            "percentiles": {
+              "percentiles_bucket": {
+                "buckets_path": "date_buckets > _count",
+                "percents": [
+                  75.0
+                ]
+              }
+            },
+            "stats": {
+              "extended_stats_bucket": {
+                "buckets_path": "date_buckets > _count"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "throttle_period": "15m",
+  "condition": {
+    "script": {
+      "inline": "return ctx.payload.aggregations.date_buckets.buckets[-1].doc_count > (ctx.payload.aggregations.percentiles.values['75.0']+(ctx.payload.aggregations.stats.std_deviation*2));"
+    }
+  },
+  "actions": {
+    "log": {
+      "logging": {
+        "text": "{{ctx.metadata.query_tag}} is getting attention!"
+      }
+    }
+  }
+}

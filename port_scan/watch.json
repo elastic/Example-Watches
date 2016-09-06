@@ -1,0 +1,105 @@
+{
+  "metadata": {
+    "time_period": "10m",
+    "time_window": "1h"
+  },
+  "trigger": {
+    "schedule": {
+      "interval": "1s"
+    }
+  },
+  "input": {
+    "search": {
+      "request": {
+        "indices": "log",
+        "body": {
+          "query": {
+            "range": {
+              "@timestamp": {
+                "gte": "now-{{ctx.metadata.time_window}}"
+              }
+            }
+          },
+          "aggs": {
+            "time_buckets": {
+              "date_histogram": {
+                "field": "@timestamp",
+                "interval": "{{ctx.metadata.time_period}}"
+              },
+              "aggs": {
+                "source_dest_port": {
+                  "cardinality": {
+                    "field": "source_dest_port"
+                  }
+                },
+                "source_dest": {
+                  "cardinality": {
+                    "field": "source_dest"
+                  }
+                },
+                "avg_ports_period": {
+                  "bucket_script": {
+                    "buckets_path": {
+                      "source_dest_port": "source_dest_port",
+                      "source_dest": "source_dest"
+                    },
+                    "script": "source_dest_port / source_dest"
+                  }
+                }
+              }
+            },
+            "avg_ports": {
+              "extended_stats_bucket": {
+                "buckets_path": "time_buckets>avg_ports_period"
+              }
+            },
+            "latest": {
+              "filter": {
+                "range": {
+                  "@timestamp": {
+                    "gte": "now-{{ctx.metadata.time_period}}"
+                  }
+                }
+              },
+              "aggs": {
+                "source_dest": {
+                  "terms": {
+                    "field": "source_dest",
+                    "size": 100,
+                    "order": {
+                      "num_ports": "desc"
+                    }
+                  },
+                  "aggs": {
+                    "num_ports": {
+                      "cardinality": {
+                        "field": "port"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "size": 0
+        }
+      }
+    }
+  },
+  "throttle_period": "30m",
+  "condition": {
+    "script": {
+      "inline": "if (ctx.payload.aggregations.latest.source_dest.buckets.size() == 0) return false; return ctx.payload.aggregations.latest.source_dest.buckets[0].num_ports.value > ctx.payload.aggregations.avg_ports.std_deviation_bounds.upper"
+    }
+  },
+  "actions": {
+    "log": {
+      "transform": {
+        "script": "port_scans=[]; ctx.payload.aggregations.latest.source_dest.buckets.collect({if (it.num_ports.value > ctx.payload.aggregations.avg_ports.std_deviation_bounds.upper){port_scans.push(it.key.replace('_','  to  '))}}); return port_scans;"
+      },
+      "logging": {
+        "text": "Port scan detected:\n {{#ctx.payload._value}}{{.}}\n{{/ctx.payload._value}}"
+      }
+    }
+  }
+}
