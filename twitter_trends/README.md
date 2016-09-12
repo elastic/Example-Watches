@@ -16,10 +16,10 @@ A template is provided in template.json.  As a minimum tweets must include:
 The watch assumes each document in Elasticsearch represents a Tweet.  A logstash configuration is provided to assist with twitter data collection.  The user is required to specify the following:
 
 * keywords - A list of keywords for which they wish to monitor.  Defaults to 'elasticsearch'.
-* consumer_key - see https://www.elastic.co/guide/en/logstash/current/plugins-inputs-twitter.html#plugins-inputs-twitter-consumer_key
-* consumer_secret - see https://www.elastic.co/guide/en/logstash/current/plugins-inputs-twitter.html#plugins-inputs-twitter-consumer_secret
-* oauth_token - see https://www.elastic.co/guide/en/logstash/current/plugins-inputs-twitter.html#plugins-inputs-twitter-oauth_token
-* oauth_token_secret - see https://www.elastic.co/guide/en/logstash/current/plugins-inputs-twitter.html#plugins-inputs-twitter-oauth_token_secret
+* consumer_key - see [here](https://www.elastic.co/guide/en/logstash/current/plugins-inputs-twitter.html#plugins-inputs-twitter-consumer_key) 
+* consumer_secret - see [here](https://www.elastic.co/guide/en/logstash/current/plugins-inputs-twitter.html#plugins-inputs-twitter-consumer_secret)
+* oauth_token - see [here](https://www.elastic.co/guide/en/logstash/current/plugins-inputs-twitter.html#plugins-inputs-twitter-oauth_token)
+* oauth_token_secret - see [here](https://www.elastic.co/guide/en/logstash/current/plugins-inputs-twitter.html#plugins-inputs-twitter-oauth_token_secret)
 * template - path to the template provided.
 * hosts - Assumed to be localhost:9200.  Change as required.
 * flush_size - Defaults to 1 as Elastic volumes are low.
