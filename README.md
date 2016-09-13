@@ -13,13 +13,19 @@ This package provides a collection of example  watches.  These watches have been
 
 #Structure
 
-For each watch the following is provided:
+In each watch directory the following is provided:
 
 * README - describes the watch including any assumptions regards mapping, data structure and behaviour.
-* mapping.json - An approapriate mapping for the test data provided.
-* watch.json - Body of the watch.
-* /test_data - Directory of test data with instructions on loading and using the test set.
+* mapping.json - An re-usable mapping which is also appropriate for the test data provided.
+* watch.json - Body of the watch. Used in the below tests. 
+* /tests - Directory of tests.  Each test is defined as JSON file.  See Below.
 * load_watch.sh.  Utility script for loading each watch to a local Elasticsearch cluster.  Each watch can be loaded by running load_watch.sh <watch folder name>. 
+
+The parent directory includes the following utility scripts:
+
+* run_test.py - A python script which can be used to run a specific test e.g. python run_test.py --test_file new_process_started/tests/test1.json 
+* load_watch.sh - Utility script for loading a specific watch to a local Elasticsearch cluster. The first parameter should specify the folder name e.g. ./load_watch.sh errors_in_logs
+* run_all_tests.sh - Runs all tests and prints output.
 
 #Watches
 
@@ -29,3 +35,29 @@ For each watch the following is provided:
 * Unexpected Account Activity - A watch which aims detect and to alert if a user is created in Active Directory/LDAP and subsequently deleted within N mins.
 * New Process Started - A watch which aims to detect if a process is started on a server for the first time.
 * New User-Server Communication - A watch which aims to detect if a user logs onto a server for the first time within the current time period.
+
+#Testing
+
+Each watch includes a test directory containing a set of tests expressed as JSON files.  Each JSON file describes a single isolated test and includes:
+
+* watch_name - The watch name
+* watch_file - Location of the watch file (relative to base directory)
+* mapping_file - Location of the mapping file (relative to base directory)
+* index - The required index on which both the watch and test depend.
+* type - The required type on which both the watch and test depend.
+* events - A list of test data objects.  Each test data object contains the required fields and an 'offset' value.  This integer can be positive and negative.  This value is added to the current system time when the events are indexed by the run_test.py.  To ensure the "past" is populated as required use negative values.  This ensures the test data is populated for the current period, allows the watches to match.
+* match - A field indicating if the watch should match - defaults to true.
+
+The run_test.py performs the following when running a test file:
+
+1. Deletes the index specified.
+2. Loads the required mapping.
+3. Loads the dataset, setting the timestamps of the events to the current+offset.
+4. Refreshes the index.
+5. Adds the watch
+6. Executes the watch
+7. Confirms the watch matches the intended outcome. matched and confirms the output of the watch (log text)
+
+
+
+

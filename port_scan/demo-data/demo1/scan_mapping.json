@@ -17,6 +17,10 @@
         "dest": {
           "type": "string",
           "index": "not_analyzed"
+        },
+        "source_dest": {
+          "type": "string",
+          "index":"not_analyzed"
         }
       }
     }

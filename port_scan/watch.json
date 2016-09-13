@@ -17,8 +17,7 @@
           "query": {
             "range": {
               "@timestamp": {
-                  "gte": "now-150m",
-                  "lte": "now-120m"
+                  "gte": "now-{{ctx.metadata.time_window}}"
                 }
             }
           },
@@ -35,7 +34,7 @@
                 "series": {
                   "date_histogram": {
                     "field": "@timestamp",
-                    "interval": "1m"
+                    "interval": "{{ctx.metadata.time_period}}"
                   },
                   "aggs": {
                     "num_ports": {
@@ -88,7 +87,7 @@
     },
     "index_payload": {
       "transform": {
-        "script": "docs=[]; ctx.payload.aggregations.source_dest.buckets.each({if (it.port_stats.std_deviation > 0 && (it.series.buckets[-1].num_ports.value> ((ctx.metadata.sensitivity * it.port_stats.std_deviation)+it.median_ports.values['50.0']))){docs.push(['@timestamp':ctx.trigger.triggered_time,'source':it.key.split('_')[0],'dest':it.key.split('_')[1],'port_count':it.series.buckets[-1].num_ports.value])}}); return ['_doc':docs];"
+        "script": "docs=[]; ctx.payload.aggregations.source_dest.buckets.each({if (it.port_stats.std_deviation > 0 && (it.series.buckets[-1].num_ports.value> ((ctx.metadata.sensitivity * it.port_stats.std_deviation)+it.median_ports.values['50.0']))){docs.push(['@timestamp':ctx.trigger.triggered_time,'source_dest':it.key,'source':it.key.split('_')[0],'dest':it.key.split('_')[1],'port_count':it.series.buckets[-1].num_ports.value])}}); return ['_doc':docs];"
       },
       "index": {
         "index": "connection-scans",

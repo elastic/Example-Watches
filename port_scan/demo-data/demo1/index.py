@@ -42,9 +42,9 @@ def read_file(file_object,offset):
         yield {
             "@timestamp":last_time.strftime('%Y-%m-%dT%H:%M:%S.%f%z'),
             "host":fields[1],
-            "source_ip":fields[2],
+            "source":fields[2],
             "source_port":int(fields[3]),
-            "dest_ip":fields[4],
+            "dest":fields[4],
             "dest_port":int(fields[5]),
             "source_dest_port":fields[2]+"_"+fields[4]+"_"+fields[5],
             "source_dest":fields[2]+"_"+fields[4],

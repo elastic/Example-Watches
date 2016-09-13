@@ -1,10 +1,10 @@
 {
   "metadata": {
-    "window_period": "10m"
+    "window_period": "30s"
   },
   "trigger": {
     "schedule": {
-      "interval": "10m"
+      "interval": "30s"
     }
   },
   "input": {
@@ -112,7 +112,7 @@
   "actions": {
     "log": {
       "logging": {
-        "text": "New Processes started! \n {{#ctx.payload._value}}{{.}}\n\n{{/ctx.payload._value}}"
+        "text": "Processes started:{{#ctx.payload._value}}{{.}}:{{/ctx.payload._value}}"
       }
     }
   }
