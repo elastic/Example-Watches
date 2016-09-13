@@ -18,7 +18,8 @@ For each watch the following is provided:
 * README - describes the watch including any assumptions regards mapping, data structure and behaviour.
 * mapping.json - An approapriate mapping for the test data provided.
 * watch.json - Body of the watch.
-* /data - Directory of test data with instructions on loading and using the test set.
+* /test_data - Directory of test data with instructions on loading and using the test set.
+* load_watch.sh.  Utility script for loading each watch to a local Elasticsearch cluster.  Each watch can be loaded by running load_watch.sh <watch folder name>. 
 
 #Watches
 
@@ -26,3 +27,5 @@ For each watch the following is provided:
 * Port Scan - A watch which aims to detect and alert if a server established a high number of connections to a destination across a large number of ports.
 * Social Media Trending - A watch which alerts if a social media topic/tag begins to show increase activity
 * Unexpected Account Activity - A watch which aims detect and to alert if a user is created in Active Directory/LDAP and subsequently deleted within N mins.
+* New Process Started - A watch which aims to detect if a process is started on a server for the first time.
+* New User-Server Communication - A watch which aims to detect if a user logs onto a server for the first time within the current time period.
