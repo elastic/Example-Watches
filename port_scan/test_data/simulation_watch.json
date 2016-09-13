@@ -1,0 +1,100 @@
+{
+    "metadata": {
+      "time_period": "%{time_period}m",
+      "upper_time": "%{upper_time}",
+      "lower_time": "%{lower_time}",
+      "sensitivity": 2.0
+    },
+    "trigger": {
+      "schedule": {
+        "interval": "100h"
+      }
+    },
+    "input": {
+      "search": {
+        "request": {
+          "indices": "connection",
+          "body": {
+            "query": {
+              "range": {
+                "@timestamp": {
+                  "gte": "{{ctx.metadata.lower_time}}",
+                  "lte": "{{ctx.metadata.upper_time}}"
+                }
+              }
+            },
+            "aggs": {
+              "source_dest": {
+                "terms": {
+                  "field": "source_dest",
+                  "size": 100,
+                  "order": {
+                    "unique_ports": "desc"
+                  }
+                },
+                "aggs": {
+                  "series": {
+                    "date_histogram": {
+                      "field": "@timestamp",
+                      "interval": "1m"
+                    },
+                    "aggs": {
+                      "num_ports": {
+                        "cardinality": {
+                          "field": "dest_port"
+                        }
+                      }
+                    }
+                  },
+                  "port_stats": {
+                    "extended_stats_bucket": {
+                      "buckets_path": "series>num_ports"
+                    }
+                  },
+                  "median_ports": {
+                    "percentiles_bucket": {
+                      "buckets_path": "series>num_ports",
+                      "percents": [
+                        50.0
+                      ]
+                    }
+                  },
+                  "unique_ports": {
+                      "cardinality": {
+                        "field": "dest_port"
+                      }
+                  }
+                }
+              }
+            },
+            "size": 0
+          }
+        }
+      }
+    },
+    "throttle_period": "30m",
+    "condition": {
+      "script": {
+        "inline": "if (ctx.payload.aggregations.source_dest.buckets.size() == 0) return false; return ctx.payload.aggregations.source_dest.buckets.any({return it.port_stats.std_deviation > 0 && (it.series.buckets[-1].num_ports.value > ((ctx.metadata.sensitivity * it.port_stats.std_deviation)+it.median_ports.values['50.0']))})"
+      }
+    },
+    "actions": {
+      "log": {
+        "transform": {
+          "script": "port_scans=[]; ctx.payload.aggregations.source_dest.buckets.each({if (it.port_stats.std_deviation > 0 && (it.series.buckets[-1].num_ports.value > ((ctx.metadata.sensitivity * it.port_stats.std_deviation)+it.median_ports.values['50.0']))) {port_scans.push(it.key.replace('_',' to '))}}); return port_scans;"
+        },
+        "logging": {
+          "text": "Port scan detected:\n {{#ctx.payload._value}}{{.}}\n{{/ctx.payload._value}}"
+        }
+      },
+      "index_payload": {
+        "transform": {
+          "script": "docs=[]; ctx.payload.aggregations.source_dest.buckets.each({if (it.port_stats.std_deviation > 0 && (it.series.buckets[-1].num_ports.value> ((ctx.metadata.sensitivity * it.port_stats.std_deviation)+it.median_ports.values['50.0']))){docs.push(['@timestamp':ctx.metadata.upper_time,'source':it.key.split('_')[0],'dest':it.key.split('_')[1],'port_count':it.series.buckets[-1].num_ports.value])}}); return ['_doc':docs];"
+        },
+        "index": {
+          "index": "connection-scans",
+          "doc_type": "scan"
+        }
+      }
+    }
+  }

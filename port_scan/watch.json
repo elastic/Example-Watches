@@ -1,81 +1,66 @@
 {
   "metadata": {
-    "time_period": "10m",
-    "time_window": "1h"
+    "time_period": "1m",
+    "time_window": "30m",
+    "sensitivity": 2.0
   },
   "trigger": {
     "schedule": {
-      "interval": "1s"
+      "interval": "1m"
     }
   },
   "input": {
     "search": {
       "request": {
-        "indices": "log",
+        "indices": "connection",
         "body": {
           "query": {
             "range": {
               "@timestamp": {
-                "gte": "now-{{ctx.metadata.time_window}}"
-              }
+                  "gte": "now-150m",
+                  "lte": "now-120m"
+                }
             }
           },
           "aggs": {
-            "time_buckets": {
-              "date_histogram": {
-                "field": "@timestamp",
-                "interval": "{{ctx.metadata.time_period}}"
-              },
-              "aggs": {
-                "source_dest_port": {
-                  "cardinality": {
-                    "field": "source_dest_port"
-                  }
-                },
-                "source_dest": {
-                  "cardinality": {
-                    "field": "source_dest"
-                  }
-                },
-                "avg_ports_period": {
-                  "bucket_script": {
-                    "buckets_path": {
-                      "source_dest_port": "source_dest_port",
-                      "source_dest": "source_dest"
-                    },
-                    "script": "source_dest_port / source_dest"
-                  }
-                }
-              }
-            },
-            "avg_ports": {
-              "extended_stats_bucket": {
-                "buckets_path": "time_buckets>avg_ports_period"
-              }
-            },
-            "latest": {
-              "filter": {
-                "range": {
-                  "@timestamp": {
-                    "gte": "now-{{ctx.metadata.time_period}}"
-                  }
+            "source_dest": {
+              "terms": {
+                "field": "source_dest",
+                "size": 100,
+                "order": {
+                  "unique_ports": "desc"
                 }
               },
               "aggs": {
-                "source_dest": {
-                  "terms": {
-                    "field": "source_dest",
-                    "size": 100,
-                    "order": {
-                      "num_ports": "desc"
-                    }
+                "series": {
+                  "date_histogram": {
+                    "field": "@timestamp",
+                    "interval": "1m"
                   },
                   "aggs": {
                     "num_ports": {
                       "cardinality": {
-                        "field": "port"
+                        "field": "dest_port"
                       }
                     }
+                  }
+                },
+                "port_stats": {
+                  "extended_stats_bucket": {
+                    "buckets_path": "series>num_ports"
+                  }
+                },
+                "median_ports": {
+                  "percentiles_bucket": {
+                    "buckets_path": "series>num_ports",
+                    "percents": [
+                      50.0
+                    ]
+                  }
+                },
+                "unique_ports": {
+                  "cardinality": {
+                    "field": "dest_port"
                   }
                 }
               }
@@ -86,19 +71,28 @@
       }
     }
   },
-  "throttle_period": "30m",
+  "throttle_period": "1m",
   "condition": {
     "script": {
-      "inline": "if (ctx.payload.aggregations.latest.source_dest.buckets.size() == 0) return false; return ctx.payload.aggregations.latest.source_dest.buckets[0].num_ports.value > ctx.payload.aggregations.avg_ports.std_deviation_bounds.upper"
+      "inline": "if (ctx.payload.aggregations.source_dest.buckets.size() == 0) return false; return ctx.payload.aggregations.source_dest.buckets.any({return it.port_stats.std_deviation > 0 && (it.series.buckets[-1].num_ports.value > ((ctx.metadata.sensitivity * it.port_stats.std_deviation)+it.median_ports.values['50.0']))});"
     }
   },
   "actions": {
     "log": {
       "transform": {
-        "script": "port_scans=[]; ctx.payload.aggregations.latest.source_dest.buckets.collect({if (it.num_ports.value > ctx.payload.aggregations.avg_ports.std_deviation_bounds.upper){port_scans.push(it.key.replace('_','  to  '))}}); return port_scans;"
+        "script": "port_scans=[]; ctx.payload.aggregations.source_dest.buckets.each({if (it.port_stats.std_deviation > 0 && (it.series.buckets[-1].num_ports.value > ((ctx.metadata.sensitivity * it.port_stats.std_deviation)+it.median_ports.values['50.0']))) {port_scans.push(it.key.replace('_',' to '))}}); return port_scans;"
       },
       "logging": {
         "text": "Port scan detected:\n {{#ctx.payload._value}}{{.}}\n{{/ctx.payload._value}}"
+      }
+    },
+    "index_payload": {
+      "transform": {
+        "script": "docs=[]; ctx.payload.aggregations.source_dest.buckets.each({if (it.port_stats.std_deviation > 0 && (it.series.buckets[-1].num_ports.value> ((ctx.metadata.sensitivity * it.port_stats.std_deviation)+it.median_ports.values['50.0']))){docs.push(['@timestamp':ctx.trigger.triggered_time,'source':it.key.split('_')[0],'dest':it.key.split('_')[1],'port_count':it.series.buckets[-1].num_ports.value])}}); return ['_doc':docs];"
+      },
+      "index": {
+        "index": "connection-scans",
+        "doc_type": "scan"
       }
     }
   }
