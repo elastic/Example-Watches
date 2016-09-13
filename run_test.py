@@ -43,18 +43,16 @@ with open(args.test_file,'r') as test_file:
         #Confirm Matches
         match = test['match'] if test['match'] else True
         print "Expected: Watch Condition: %s"%match
+        met=response['watch_record']['result']['condition']['met']
         if match:
-            met=response['watch_record']['result']['condition']['met']
             if met and response['watch_record']['result']['condition']['status'] == "success":
                 print "Received: Watch Condition: %s"%met
+                print "Expected: %s"%test['expected_response']
+                print "Received: %s"%response['watch_record']['result']['actions'][0]['logging']['logged_text']
                 if response['watch_record']['result']['actions'][0]['logging']['logged_text'] == test['expected_response']:
-                    print "Expected: %s"%test['expected_response']
-                    print "Received: %s"%response['watch_record']['result']['actions'][0]['logging']['logged_text']
                     print "TEST PASS"
                     sys.exit(0)
                 else:
-                    print "Expected: %s"%test['expected_response']
-                    print "Received: %s"%response['watch_record']['result']['actions'][0]['logging']['logged_text']
                     print "TEST FAIL"
                     sys.exit(1)
             else:
@@ -62,7 +60,6 @@ with open(args.test_file,'r') as test_file:
                 print "TEST FAIL"
                 sys.exit(1)
         else:
-            exit=response['watch_record']['result']['condition']['met']
-            print "Received: Watch Condition: %s"%response['watch_record']['result']['condition']['met']
+            print "Received: Watch Condition: %s"%met
             print "TEST %s"%("PASS" if not response['watch_record']['result']['condition']['met'] else "FAIL")
-            sys.exit(exit)
+            sys.exit(met)
