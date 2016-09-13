@@ -1,8 +1,8 @@
 {
   "watch_name":"new_process_started",
   "mapping_file":"./new_process_started/mapping.json",
-  "index":"log",
-  "type":"log",
+  "index":"logins",
+  "type":"login",
   "match": true,
   "watch_file":"./new_process_started/watch.json",
   "events":[

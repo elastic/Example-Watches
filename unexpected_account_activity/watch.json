@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "window_period": "60m"
+    "window_period": "5m"
   },
   "trigger": {
     "schedule": {
@@ -19,7 +19,7 @@
                 {
                   "range": {
                     "@timestamp": {
-                      "gte": "now-60m"
+                      "gte": "now-{{ctx.metadata.window_period}}"
                     }
                   }
                 }
@@ -83,7 +83,7 @@
         "script": "adds=ctx.payload.aggregations.event_types.buckets.add.users.buckets.collect({it.key}); removes=ctx.payload.aggregations.event_types.buckets.remove.users.buckets.collect({it.key}); return adds.intersect(removes)"
       },
       "logging": {
-        "text": "Users added and removed in the last {{ctx.metadata.window_period}}: \n{{#ctx.payload._value}}{{.}}\n\n{{/ctx.payload._value}}"
+        "text": "Users added and removed in the last {{ctx.metadata.window_period}}:{{#ctx.payload._value}}{{.}}:{{/ctx.payload._value}}"
       }
     }
   }

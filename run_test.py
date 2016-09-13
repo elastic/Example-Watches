@@ -20,12 +20,12 @@ with open(args.test_file,'r') as test_file:
     test=json.loads(test_file.read())
     #Load Mapping
     try:
-        es.indices.get(test['index'])
-        es.indices.delete(test['type'])
+        es.indices.delete(test['index'])
     except:
         pass
     with open(test['mapping_file'],'r') as mapping_file:
-        es.indices.create(index=test["index"],body=json.loads(mapping_file.read()))
+        body=json.loads(mapping_file.read())
+        es.indices.create(index=test["index"],body=body)
     #Index data
     current_data=last_time=datetime.datetime.utcnow()
     for event in test['events']:
@@ -42,12 +42,16 @@ with open(args.test_file,'r') as test_file:
         response=watcher.execute_watch(test["watch_name"])
         #Confirm Matches
         if response['watch_record']['result']['condition']['met'] and response['watch_record']['result']['condition']['status'] == "success" and response['watch_record']['result']['actions'][0]['status'] == 'success':
-            print "Watch Successfully Executed"
             if response['watch_record']['result']['actions'][0]['logging']['logged_text'] == test['expected_response']:
+                print "Expected: %s"%test['expected_response']
+                print "Received: %s"%response['watch_record']['result']['actions'][0]['logging']['logged_text']
                 print "Response confirmed"
-                print response['watch_record']['result']['actions'][0]['logging']['logged_text']
                 sys.exit(0)
             else:
+                print "Expected: %s"%test['expected_response']
+                print "Received: %s"%response['watch_record']['result']['actions'][0]['logging']['logged_text']
                 print "Incorrect Response"
-                print response['watch_record']['result']['actions'][0]['logging']['logged_text']
+            sys.exit(1)
+        else:
+            print("Watch Condition Not Met as Expected.")
             sys.exit(1)

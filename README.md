@@ -58,6 +58,9 @@ The run_test.py performs the following when running a test file:
 6. Executes the watch
 7. Confirms the watch matches the intended outcome. matched and confirms the output of the watch (log text)
 
+##Requirements
 
-
+* Elasticsearch python module
+* Python 2.7.x
+* [Elasticsearch Watcher for python](https://github.com/elastic/elasticsearch-watcher-py)
 

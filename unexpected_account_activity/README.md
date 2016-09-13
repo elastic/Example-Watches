@@ -25,5 +25,4 @@ The watch assumes each document in Elasticsearch represents an Active Directory 
 
 The following watch metadata parameters influence behaviour:
 
-* window_period - The period N (hrs) over which which the list of total known systems should be collected.  Defaults to 24hrs.
-* last_period - The period X (mins) in which all hosts should respond with a log message. Defaults to 5 mins.
+* window_period - The period N (mins) within which an account should be created and subsequently deleted. Defaults to 5 mins.
