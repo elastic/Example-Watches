@@ -41,17 +41,28 @@ with open(args.test_file,'r') as test_file:
         watcher.put_watch(id=test["watch_name"],body=watch)
         response=watcher.execute_watch(test["watch_name"])
         #Confirm Matches
-        if response['watch_record']['result']['condition']['met'] and response['watch_record']['result']['condition']['status'] == "success" and response['watch_record']['result']['actions'][0]['status'] == 'success':
-            if response['watch_record']['result']['actions'][0]['logging']['logged_text'] == test['expected_response']:
-                print "Expected: %s"%test['expected_response']
-                print "Received: %s"%response['watch_record']['result']['actions'][0]['logging']['logged_text']
-                print "Response confirmed"
-                sys.exit(0)
+        match = test['match'] if test['match'] else True
+        print "Expected: Watch Condition: %s"%match
+        if match:
+            met=response['watch_record']['result']['condition']['met']
+            if met and response['watch_record']['result']['condition']['status'] == "success":
+                print "Received: Watch Condition: %s"%met
+                if response['watch_record']['result']['actions'][0]['logging']['logged_text'] == test['expected_response']:
+                    print "Expected: %s"%test['expected_response']
+                    print "Received: %s"%response['watch_record']['result']['actions'][0]['logging']['logged_text']
+                    print "TEST PASS"
+                    sys.exit(0)
+                else:
+                    print "Expected: %s"%test['expected_response']
+                    print "Received: %s"%response['watch_record']['result']['actions'][0]['logging']['logged_text']
+                    print "TEST FAIL"
+                    sys.exit(1)
             else:
-                print "Expected: %s"%test['expected_response']
-                print "Received: %s"%response['watch_record']['result']['actions'][0]['logging']['logged_text']
-                print "Incorrect Response"
-            sys.exit(1)
+                print "Received: Watch Condition: %s"%met
+                print "TEST FAIL"
+                sys.exit(1)
         else:
-            print("Watch Condition Not Met as Expected.")
-            sys.exit(1)
+            exit=response['watch_record']['result']['condition']['met']
+            print "Received: Watch Condition: %s"%response['watch_record']['result']['condition']['met']
+            print "TEST %s"%("PASS" if not response['watch_record']['result']['condition']['met'] else "FAIL")
+            sys.exit(exit)
