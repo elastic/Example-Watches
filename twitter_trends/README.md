@@ -13,7 +13,15 @@ A template is provided in template.json.  As a minimum tweets must include:
 
 ## Data Assumptions
 
-The watch assumes each document in Elasticsearch represents a Tweet.  A logstash configuration is provided to assist with twitter data collection.  The user is required to specify the following:
+The watch assumes each document in Elasticsearch represents a tweet.  All tweets should be indexed into an index starting with "twitter" and use the type "tweet".
+
+## Demo Data
+
+In addition to the usual tests, two test data sets are provided for demonstration purposes in the demo_data folder.
+
+### Demo 1
+
+A logstash configuration is provided to assist with twitter data collection.  The user is required to specify the following:
 
 * keywords - A list of keywords for which they wish to monitor.  Defaults to 'elasticsearch'.
 * consumer_key - see [here](https://www.elastic.co/guide/en/logstash/current/plugins-inputs-twitter.html#plugins-inputs-twitter-consumer_key) 
@@ -23,6 +31,8 @@ The watch assumes each document in Elasticsearch represents a Tweet.  A logstash
 * template - path to the template provided.
 * hosts - Assumed to be localhost:9200.  Change as required.
 * flush_size - Defaults to 1 as Elastic volumes are low.
+
+In addition a template file is provided to ensure the data is indexed correctly.
 
 
 ## Other Assumptions

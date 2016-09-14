@@ -1,6 +1,6 @@
 {
   "mappings": {
-    "logs": {
+    "log": {
       "properties": {
         "@timestamp": {
           "type": "date",

@@ -1,0 +1,25 @@
+{
+  "mappings": {
+    "tweet": {
+      "properties": {
+        "@timestamp": {
+          "type": "date",
+          "format": "dateOptionalTime"
+        },
+        "text": {
+          "type": "string",
+          "norms": {
+            "enabled": true
+          },
+          "fields": {
+            "raw": {
+              "type": "string",
+              "index": "not_analyzed",
+              "ignore_above": 256
+            }
+          }
+        }
+      }
+    }
+  }
+}
