@@ -7,11 +7,8 @@
           "index": "not_analyzed"
         },
         "@timestamp": {
-          "type": "date"
-        },
-        "time": {
           "type": "date",
-          "format": "strict_time_no_millis"
+          "format": "strict_date_optional_time||strict_time_no_millis"
         }
       }
     }

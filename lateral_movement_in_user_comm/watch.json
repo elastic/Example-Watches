@@ -86,7 +86,7 @@
                       "filter": [
                         {
                           "range": {
-                            "time": {
+                            "@timestamp": {
                               "gte": "{{ctx.payload.get_time_period.hits.hits.0.fields.lower_time.0}}",
                               "lte": "{{ctx.payload.get_time_period.hits.hits.0.fields.upper_time.0}}"
                             }
@@ -136,7 +136,7 @@
   "actions": {
     "log": {
       "logging": {
-        "text": "The following users have logged onto a new server for the first time within the time period {{ctx.payload.lower_time}} to {{ctx.payload.upper_time}}: \n {{#ctx.payload.new_starts}}{{.}}\n\n{{/ctx.payload.new_starts}}"
+        "text": "The following users have logged onto a new server for the first time within the time period: {{#ctx.payload.new_starts}}{{.}}:{{/ctx.payload.new_starts}}"
       }
     }
   }
