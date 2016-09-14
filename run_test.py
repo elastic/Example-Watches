@@ -31,7 +31,7 @@ with open(args.test_file,'r') as test_file:
     i=0
     for event in test['events']:
         #All offsets in seconds
-        event_time=current_data+datetime.timedelta(seconds=int(event['offset'] if event['offset'] else 0))
+        event_time=current_data+datetime.timedelta(seconds=int(event['offset'] if 'offset' in event else 0))
         event["@timestamp"]=event_time.strftime('%Y-%m-%dT%H:%M:%S.%f%z')
         es.index(index=test['index'],doc_type=test['type'],body=event,id=event['id'] if "id" in event else i)
         i+=1
@@ -43,23 +43,23 @@ with open(args.test_file,'r') as test_file:
         watcher.put_watch(id=test["watch_name"],body=watch)
         response=watcher.execute_watch(test["watch_name"])
         #Confirm Matches
-        match = test['match'] if test['match'] else True
-        print "Expected: Watch Condition: %s"%match
+        match = test['match'] if 'match' in test else True
+        print("Expected: Watch Condition: %s"%match)
         met=response['watch_record']['result']['condition']['met']
-        print "Received: Watch Condition: %s"%met
+        print("Received: Watch Condition: %s"%met)
         if match:
             if met and response['watch_record']['result']['condition']['status'] == "success":
-                print "Expected: %s"%test['expected_response']
-                print "Received: %s"%response['watch_record']['result']['actions'][0]['logging']['logged_text']
+                print("Expected: %s"%test['expected_response'])
+                print("Received: %s"%response['watch_record']['result']['actions'][0]['logging']['logged_text'])
                 if response['watch_record']['result']['actions'][0]['logging']['logged_text'] == test['expected_response']:
-                    print "TEST PASS"
+                    print("TEST PASS")
                     sys.exit(0)
                 else:
-                    print "TEST FAIL"
+                    print("TEST FAIL")
                     sys.exit(1)
             else:
-                print "TEST FAIL"
+                print("TEST FAIL")
                 sys.exit(1)
         else:
-            print "TEST %s"%("PASS" if not response['watch_record']['result']['condition']['met'] else "FAIL")
+            print("TEST %s"%("PASS" if not response['watch_record']['result']['condition']['met'] else "FAIL"))
             sys.exit(met)
