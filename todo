@@ -1,4 +1,2 @@
-1. Allow tests to support negative outcomes
-2. Offsets mandatory
-3. Simuluate_watch.py needs to print better timings so its easier to see whats going on
-4. Ensure python scripts work with 3.5
+1. Simuluate_watch.py needs to print better timings so its easier to see whats going on
+2. Ensure python scripts work with 3.5

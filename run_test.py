@@ -31,7 +31,7 @@ with open(args.test_file,'r') as test_file:
     i=0
     for event in test['events']:
         #All offsets in seconds
-        event_time=current_data+datetime.timedelta(seconds=int(event['offset']))
+        event_time=current_data+datetime.timedelta(seconds=int(event['offset'] if event['offset'] else 0))
         event["@timestamp"]=event_time.strftime('%Y-%m-%dT%H:%M:%S.%f%z')
         es.index(index=test['index'],doc_type=test['type'],body=event,id=event['id'] if "id" in event else i)
         i+=1
