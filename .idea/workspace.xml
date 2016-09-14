@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="4d646213-7de8-443c-bedf-91f119b7be35" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/run_all_tests.sh" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/twitter_trends/tests/test1.json" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/run_test.py" afterPath="$PROJECT_DIR$/run_test.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/new_process_started/tests/test1.json" afterPath="$PROJECT_DIR$/new_process_started/tests/test1.json" />
-    </list>
+    <list default="true" id="4d646213-7de8-443c-bedf-91f119b7be35" name="Default" comment="" />
     <ignored path="Example-Watches.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path=".idea/dataSources.local.xml" />
