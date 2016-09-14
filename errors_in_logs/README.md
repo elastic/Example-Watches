@@ -4,8 +4,7 @@
 
 A watch which alerts if errors are present in a log file. Provides example errors as output.
 
-
-The following watch utilises a basic query_string search, as used by Kibana, to find all documents in the last N minutes which either contain the word “error” or have a value of “ERROR” for the field “loglevel” i.e. the log level under which the message was generated.  The query returns 10 hits ordered by @timestamp in descending order.
+The following watch utilises a basic query_string search, as used by Kibana, to find all documents in the last N minutes which either contain the word “error” or have a value of “ERROR” for the field “loglevel” i.e. the log level under which the message was generated.  The query returns the ids of upto 10 hits ordered by @timestamp in descending order.
 
 ## Mapping Assumptions
 
@@ -17,7 +16,7 @@ A mapping is provided in mapping.json.  Watches require data producing the follo
 
 ## Data Assumptions
 
-The Watch assumes each log message is represented by an Elasticsearch document.
+The Watch assumes each log message is represented by an Elasticsearch document. The watch assumes data is indexed in a "logs" index and "log" type.
 
 ## Other Assumptions
 
