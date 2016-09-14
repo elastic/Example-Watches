@@ -61,7 +61,7 @@ The run_test.py performs the following when running a test file:
 
 ##Requirements
 
-* Elasticsearch python module
-* Python 2.7.x
+* [Elasticsearch python module](https://www.elastic.co/guide/en/elasticsearch/client/python-api/current/index.html)
+* Python 2.7.x or 3.5.x
 * [Elasticsearch Watcher for python](https://github.com/elastic/elasticsearch-watcher-py)
 
