@@ -1,6 +1,6 @@
 {
   "mappings": {
-    "log": {
+    "connection": {
       "properties": {
         "source_dest": {
           "type": "string",

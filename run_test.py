@@ -16,6 +16,13 @@ parser.add_argument('--test_file',help='test file')
 parser.set_defaults(host='localhost',port="9200",test_file='data.json')
 args = parser.parse_args()
 es = Elasticsearch([args.host+":"+args.port])
+
+def find_item(list, key):
+    for item in list:
+        if key in item:
+            return item
+    return None
+
 with open(args.test_file,'r') as test_file:
     test=json.loads(test_file.read())
     #Load Mapping
@@ -50,16 +57,16 @@ with open(args.test_file,'r') as test_file:
         if match:
             if met and response['watch_record']['result']['condition']['status'] == "success":
                 print("Expected: %s"%test['expected_response'])
-                print("Received: %s"%response['watch_record']['result']['actions'][0]['logging']['logged_text'])
-                if response['watch_record']['result']['actions'][0]['logging']['logged_text'] == test['expected_response']:
-                    print("TEST PASS")
-                    sys.exit(0)
+                logging=find_item(response['watch_record']['result']['actions'],'logging')['logging']
+                if logging:
+                    print("Received: %s"%logging['logged_text'])
+                    if logging['logged_text'] == test['expected_response']:
+                        print("TEST PASS")
+                        sys.exit(0)
                 else:
-                    print("TEST FAIL")
-                    sys.exit(1)
-            else:
-                print("TEST FAIL")
-                sys.exit(1)
+                    print("Logging action required for testing")
+            print("TEST FAIL")
+            sys.exit(1)
         else:
             print("TEST %s"%("PASS" if not response['watch_record']['result']['condition']['met'] else "FAIL"))
             sys.exit(met)
