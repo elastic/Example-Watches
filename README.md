@@ -25,7 +25,8 @@ The parent directory includes the following utility scripts:
 
 * run_test.py - A python script which can be used to run a specific test e.g. python run_test.py --test_file new_process_started/tests/test1.json 
 * load_watch.sh - Utility script for loading a specific watch to a local Elasticsearch cluster. The first parameter should specify the folder name e.g. ./load_watch.sh errors_in_logs
-* run_all_tests.sh - Runs all tests and prints output.
+* run_test.sh - Runs a specified watches tests. Specify watch by directory name e.g. ./run_test.sh port_scan
+* run_all_tests.sh - Runs all tests.
 
 #Watches
 
