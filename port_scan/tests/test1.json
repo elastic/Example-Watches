@@ -368,55 +368,55 @@
     "dest_port":5053
   },
   {
-    "offset":-57,
+    "offset":-30,
     "source_dest":"hostA_hostB",
     "source_dest_port":"hostA_hostB_5043",
     "dest_port":5054
   },
   {
-    "offset":-54,
+    "offset":-30,
     "source_dest":"hostA_hostB",
     "source_dest_port":"hostA_hostB_5043",
     "dest_port":5055
   },
   {
-    "offset":-51,
+    "offset":-30,
     "source_dest":"hostA_hostB",
     "source_dest_port":"hostA_hostB_5043",
     "dest_port":5056
   },
   {
-    "offset":-48,
+    "offset":-30,
     "source_dest":"hostA_hostB",
     "source_dest_port":"hostA_hostB_5043",
     "dest_port":5057
   },
   {
-    "offset":-45,
+    "offset":-30,
     "source_dest":"hostA_hostB",
     "source_dest_port":"hostA_hostB_5043",
     "dest_port":5058
   },
   {
-    "offset":-42,
+    "offset":-30,
     "source_dest":"hostA_hostB",
     "source_dest_port":"hostA_hostB_5043",
     "dest_port":5059
   },
   {
-    "offset":-39,
+    "offset":-30,
     "source_dest":"hostA_hostB",
     "source_dest_port":"hostA_hostB_5043",
     "dest_port":5060
   },
   {
-    "offset":-36,
+    "offset":-30,
     "source_dest":"hostA_hostB",
     "source_dest_port":"hostA_hostB_5043",
     "dest_port":5061
   },
   {
-    "offset":-33,
+    "offset":-30,
     "source_dest":"hostA_hostB",
     "source_dest_port":"hostA_hostB_5043",
     "dest_port":5062
@@ -428,63 +428,64 @@
     "dest_port":5063
   },
   {
-    "offset":-27,
+    "offset":-30,
     "source_dest":"hostA_hostB",
     "source_dest_port":"hostA_hostB_5043",
     "dest_port":5064
   },
   {
-    "offset":-24,
+    "offset":-30,
     "source_dest":"hostA_hostB",
     "source_dest_port":"hostA_hostB_5043",
     "dest_port":5065
   },
   {
-    "offset":-21,
+    "offset":-30,
     "source_dest":"hostA_hostB",
     "source_dest_port":"hostA_hostB_5043",
     "dest_port":5066
   },
   {
-    "offset":-18,
+    "offset":-30,
     "source_dest":"hostA_hostB",
     "source_dest_port":"hostA_hostB_5043",
     "dest_port":5067
   },
   {
-    "offset":-15,
+    "offset":-30,
     "source_dest":"hostA_hostB",
     "source_dest_port":"hostA_hostB_5043",
     "dest_port":5068
   },
   {
-    "offset":-12,
+    "offset":-30,
     "source_dest":"hostA_hostB",
     "source_dest_port":"hostA_hostB_5043",
     "dest_port":5069
   },
   {
-    "offset":-9,
+    "offset":-30,
     "source_dest":"hostA_hostB",
     "source_dest_port":"hostA_hostB_5043",
     "dest_port":5070
   },
   {
-    "offset":-6,
+    "offset":-30,
     "source_dest":"hostA_hostB",
     "source_dest_port":"hostA_hostB_5043",
     "dest_port":5071
   },
   {
-    "offset":-3,
+    "offset":-30,
     "source_dest":"hostA_hostB",
     "source_dest_port":"hostA_hostB_5043",
     "dest_port":5072
   },
   {
+    "offset":-30,
     "source_dest":"hostA_hostB",
     "source_dest_port":"hostA_hostB_5043",
-    "dest_port":5073
+    "dest_port":5072
   }
   ],
   "expected_response":"Port scan detected:hostA to hostB:"
