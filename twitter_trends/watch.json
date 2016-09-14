@@ -2,7 +2,7 @@
   "metadata": {
     "bucket_interval": "5m",
     "time_period": "8h",
-    "query_string": "text: elasticsearch"
+    "query_string": "elasticsearch"
   },
   "trigger": {
     "schedule": {
@@ -18,7 +18,7 @@
             "filtered": {
               "query": {
                 "query_string": {
-                  "query": "{{ctx.metadata.query_string}}",
+                  "query": "text: {{ctx.metadata.query_string}}",
                   "analyze_wildcard": true
                 }
               },
