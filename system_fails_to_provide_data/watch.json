@@ -5,7 +5,7 @@
   },
   "trigger": {
     "schedule": {
-      "interval": "1s"
+      "interval": "5m"
     }
   },
   "input": {
@@ -61,7 +61,7 @@
       "inline": "return ctx.payload.aggregations.periods.buckets.history.hosts.buckets.size() > ctx.payload.aggregations.periods.buckets.last_period.hosts.buckets.size();"
     }
   },
-  "throttle_period": "1s",
+  "throttle_period": "5m",
   "actions": {
     "log": {
       "transform": {
