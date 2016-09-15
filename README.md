@@ -36,6 +36,7 @@ The parent directory includes the following utility scripts:
 * Unexpected Account Activity - A watch which aims detect and to alert if a user is created in Active Directory/LDAP and subsequently deleted within N mins.
 * New Process Started - A watch which aims to detect if a process is started on a server for the first time.
 * New User-Server Communication - A watch which aims to detect if a user logs onto a server for the first time within the current time period.
+* System Fails to Provide Data - A watch which alerts if a system, which has previously sent data, fails to send events.
 
 #Testing
 
@@ -64,4 +65,4 @@ The run_test.py performs the following when running a test file:
 * [Elasticsearch python module](https://www.elastic.co/guide/en/elasticsearch/client/python-api/current/index.html)
 * Python 2.7.x or 3.5.x
 * [Elasticsearch Watcher for python](https://github.com/elastic/elasticsearch-watcher-py)
-* scripting enabled in Elasticsearch
+* Groovy inline scripting enabled in Elasticsearch.
