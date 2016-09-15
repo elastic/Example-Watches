@@ -1,0 +1,12 @@
+{
+  "mappings": {
+    "log": {
+      "properties": {
+        "host": {
+          "type": "string",
+          "index": "not_analyzed"
+        }
+      }
+    }
+  }
+}
