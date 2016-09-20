@@ -8,7 +8,11 @@
         },
         "@timestamp": {
           "type": "date",
-          "format": "strict_date_optional_time||strict_time_no_millis"
+          "format": "strict_date_optional_time"
+        },
+        "time": {
+          "type": "date",
+          "format": "HH:mm:ss"
         }
       }
     }

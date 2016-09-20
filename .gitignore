@@ -1,5 +1,4 @@
 todo
-*.venv
 *.idea
 *.gz
 *.log

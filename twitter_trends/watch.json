@@ -15,25 +15,21 @@
         "indices": "twitter*",
         "body": {
           "query": {
-            "filtered": {
-              "query": {
-                "query_string": {
-                  "query": "text: {{ctx.metadata.query_string}}",
-                  "analyze_wildcard": true
+            "bool": {
+              "must": [
+                {
+                  "query_string": {
+                    "query": "text: {{ctx.metadata.query_string}}",
+                    "analyze_wildcard": true
+                  }
                 }
-              },
+              ],
               "filter": {
-                "bool": {
-                  "must": [
-                    {
-                      "range": {
-                        "@timestamp": {
-                          "gte": "now-{{ctx.metadata.time_period}}",
-                          "format": "epoch_millis"
-                        }
-                      }
-                    }
-                  ]
+                "range": {
+                  "@timestamp": {
+                    "gte": "now-{{ctx.metadata.time_period}}",
+                    "format": "epoch_millis"
+                  }
                 }
               }
             }
