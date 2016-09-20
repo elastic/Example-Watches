@@ -1,4 +1,5 @@
 todo
+dist*
 *.venv
 *.idea
 *.gz
