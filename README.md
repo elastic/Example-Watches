@@ -6,7 +6,7 @@ This package provides a collection of example  watches.  These watches have been
 
 #Generic Assumptions
 
-* Elasticsearch 2.4
+* Elasticsearch 5.0
 * All watches use the log output for purposes of testing. Replace with output e.g. email, as required.
 * Painless inline script is enabled for clarity and testing only.  All scripts should be moved to hosted script (file or indexed) for production deployment.
 * All watches assume Watcher is running in the same cluster as that in which the relevant data is hosted.  They all therefore use the search input.  In a production deployment this is subject to change i.e. a http input maybe required.
@@ -62,7 +62,5 @@ The run_test.py performs the following when running a test file:
 
 ##Requirements
 
-* [Elasticsearch python module](https://www.elastic.co/guide/en/elasticsearch/client/python-api/current/index.html)
-* Python 2.7.x or 3.5.x
-* [Elasticsearch Watcher for python](https://github.com/elastic/elasticsearch-watcher-py)
+* Python virtualenv
 * Groovy inline scripting enabled in Elasticsearch.
