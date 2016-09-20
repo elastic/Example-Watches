@@ -118,10 +118,7 @@
   "actions": {
     "log": {
       "logging": {
-        "text": {
-          "inline":"Processes started:{{#ctx.payload._value}}{{.}}:{{/ctx.payload._value}}",
-          "lang":"groovy"
-        }
+        "text": "Processes started:{{#ctx.payload._value}}{{.}}:{{/ctx.payload._value}}"
       }
     }
   }
