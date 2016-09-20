@@ -73,14 +73,18 @@
   },
   "condition": {
     "script": {
-      "inline": "adds=ctx.payload.aggregations.event_types.buckets.add.users.buckets.collect({it.key}); removes=ctx.payload.aggregations.event_types.buckets.remove.users.buckets.collect({it.key}); return adds.intersect(removes).size() > 0;"
+      "inline": "adds=ctx.payload.aggregations.event_types.buckets.add.users.buckets.collect({it.key}); removes=ctx.payload.aggregations.event_types.buckets.remove.users.buckets.collect({it.key}); return adds.intersect(removes).size() > 0;",
+      "lang":"groovy"
     }
   },
   "throttle_period": "5m",
   "actions": {
     "log": {
       "transform": {
-        "script": "adds=ctx.payload.aggregations.event_types.buckets.add.users.buckets.collect({it.key}); removes=ctx.payload.aggregations.event_types.buckets.remove.users.buckets.collect({it.key}); return adds.intersect(removes)"
+        "script": {
+          "inline":"adds=ctx.payload.aggregations.event_types.buckets.add.users.buckets.collect({it.key}); removes=ctx.payload.aggregations.event_types.buckets.remove.users.buckets.collect({it.key}); return adds.intersect(removes)",
+          "lang":"groovy"
+        }
       },
       "logging": {
         "text": "Users added and removed in the last {{ctx.metadata.window_period}}:{{#ctx.payload._value}}{{.}}:{{/ctx.payload._value}}"

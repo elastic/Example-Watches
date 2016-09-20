@@ -104,15 +104,24 @@
     }
   },
   "condition": {
-    "script": "return ctx.payload.started_processes.aggregations.process_hosts.buckets.size() != ctx.payload.history_started_processes.aggregations.process_hosts.buckets.size();"
+    "script": {
+      "inline":"return ctx.payload.started_processes.aggregations.process_hosts.buckets.size() != ctx.payload.history_started_processes.aggregations.process_hosts.buckets.size();",
+      "lang":"groovy"
+    }
   },
   "transform": {
-    "script": "new_starts=ctx.payload.started_processes.aggregations.process_hosts.buckets.collect({it.key}) - ctx.payload.history_started_processes.aggregations.process_hosts.buckets.collect({it.key}); return new_starts.collect({it.replace('-',' on server ')});"
+    "script": {
+      "inline":"new_starts=ctx.payload.started_processes.aggregations.process_hosts.buckets.collect({it.key}) - ctx.payload.history_started_processes.aggregations.process_hosts.buckets.collect({it.key}); return new_starts.collect({it.replace('-',' on server ')});",
+      "lang":"groovy"
+    }
   },
   "actions": {
     "log": {
       "logging": {
-        "text": "Processes started:{{#ctx.payload._value}}{{.}}:{{/ctx.payload._value}}"
+        "text": {
+          "inline":"Processes started:{{#ctx.payload._value}}{{.}}:{{/ctx.payload._value}}",
+          "lang":"groovy"
+        }
       }
     }
   }

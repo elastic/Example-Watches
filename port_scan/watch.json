@@ -73,13 +73,17 @@
   "throttle_period": "1m",
   "condition": {
     "script": {
-      "inline": "if (ctx.payload.aggregations.source_dest.buckets.size() == 0) return false; return ctx.payload.aggregations.source_dest.buckets.any({return it.port_stats.std_deviation > 0 && (it.series.buckets[-1].num_ports.value > ((ctx.metadata.sensitivity * it.port_stats.std_deviation)+it.median_ports.values['50.0']))});"
+      "inline": "if (ctx.payload.aggregations.source_dest.buckets.size() == 0) return false; return ctx.payload.aggregations.source_dest.buckets.any({return it.port_stats.std_deviation > 0 && (it.series.buckets[-1].num_ports.value > ((ctx.metadata.sensitivity * it.port_stats.std_deviation)+it.median_ports.values['50.0']))});",
+      "lang":"groovy"
     }
   },
   "actions": {
     "log": {
       "transform": {
-        "script": "port_scans=[]; ctx.payload.aggregations.source_dest.buckets.each({if (it.port_stats.std_deviation > 0 && (it.series.buckets[-1].num_ports.value > ((ctx.metadata.sensitivity * it.port_stats.std_deviation)+it.median_ports.values['50.0']))) {port_scans.push(it.key.replace('_',' to '))}}); return port_scans;"
+        "script": {
+          "lang":"groovy",
+          "inline":"port_scans=[]; ctx.payload.aggregations.source_dest.buckets.each({if (it.port_stats.std_deviation > 0 && (it.series.buckets[-1].num_ports.value > ((ctx.metadata.sensitivity * it.port_stats.std_deviation)+it.median_ports.values['50.0']))) {port_scans.push(it.key.replace('_',' to '))}}); return port_scans;"
+        }
       },
       "logging": {
         "text": "Port scan detected:{{#ctx.payload._value}}{{.}}:{{/ctx.payload._value}}"
@@ -87,7 +91,10 @@
     },
     "index_payload": {
       "transform": {
-        "script": "docs=[]; ctx.payload.aggregations.source_dest.buckets.each({if (it.port_stats.std_deviation > 0 && (it.series.buckets[-1].num_ports.value> ((ctx.metadata.sensitivity * it.port_stats.std_deviation)+it.median_ports.values['50.0']))){docs.push(['@timestamp':ctx.trigger.triggered_time,'source_dest':it.key,'source':it.key.split('_')[0],'dest':it.key.split('_')[1],'port_count':it.series.buckets[-1].num_ports.value])}}); return ['_doc':docs];"
+        "script": {
+          "inline":"docs=[]; ctx.payload.aggregations.source_dest.buckets.each({if (it.port_stats.std_deviation > 0 && (it.series.buckets[-1].num_ports.value> ((ctx.metadata.sensitivity * it.port_stats.std_deviation)+it.median_ports.values['50.0']))){docs.push(['@timestamp':ctx.trigger.triggered_time,'source_dest':it.key,'source':it.key.split('_')[0],'dest':it.key.split('_')[1],'port_count':it.series.buckets[-1].num_ports.value])}}); return ['_doc':docs];",
+          "lang":"groovy"
+        }
       },
       "index": {
         "index": "connection-scans",

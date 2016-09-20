@@ -9,115 +9,115 @@
       }
     },
     "input": {
-      "chain": {
-        "inputs": [
-          {
-            "get_time_period": {
-              "search": {
-                "request": {
-                  "indices": [
-                    "log"
-                  ],
-                  "body": {
-                    "size": 1,
-                    "script_fields": {
-                      "upper_time": {
-                        "script": {
-                          "inline": "date = new Date(); date.setMinutes(date.getMinutes()+30); date.format('HH:mm:ssZ');",
-                          "lang": "groovy"
-                        }
-                      },
-                      "lower_time": {
-                        "script": {
-                          "inline": "date = new Date(); date.setMinutes(date.getMinutes()-30); date.format('HH:mm:ssZ');",
-                          "lang": "groovy"
-                        }
+    "chain": {
+      "inputs": [
+        {
+          "get_time_period": {
+            "search": {
+              "request": {
+                "indices": [
+                  "log"
+                ],
+                "body": {
+                  "size": 1,
+                  "script_fields": {
+                    "upper_time": {
+                      "script": {
+                        "inline": "date = new Date(); date.setMinutes(date.getMinutes()+30); date.format('HH:mm:ssZ');",
+                        "lang": "groovy"
+                      }
+                    },
+                    "lower_time": {
+                      "script": {
+                        "inline": "date = new Date(); date.setMinutes(date.getMinutes()-30); date.format('HH:mm:ssZ');",
+                        "lang": "groovy"
                       }
                     }
                   }
                 }
               }
-            },
-            "user_server_logons": {
-              "search": {
-                "request": {
-                  "indices": [
-                    "log"
-                  ],
-                  "body": {
-                    "query": {
-                      "range": {
-                        "@timestamp": {
-                          "gte": "now-{{ctx.metadata.time_period}}"
-                        }
+            }
+          },
+          "user_server_logons": {
+            "search": {
+              "request": {
+                "indices": [
+                  "log"
+                ],
+                "body": {
+                  "query": {
+                    "range": {
+                      "@timestamp": {
+                        "gte": "now-{{ctx.metadata.time_period}}"
                       }
-                    },
-                    "aggs": {
-                      "user_server": {
-                        "terms": {
-                          "field": "user_server",
-                          "size": 1000
-                        }
+                    }
+                  },
+                  "aggs": {
+                    "user_server": {
+                      "terms": {
+                        "field": "user_server",
+                        "size": 1000
                       }
-                    },
-                    "size": 0
-                  }
+                    }
+                  },
+                  "size": 0
                 }
               }
-            },
-            "new_user_server_logons": {
-              "search": {
-                "request": {
-                  "indices": [
-                    "log"
-                  ],
-                  "body": {
-                    "query": {
-                      "bool": {
-                        "filter": [
-                          {
-                            "range": {
-                              "time": {
-                                "gte": "{{ctx.payload.get_time_period.hits.hits.0.fields.lower_time.0}}",
-                                "lte": "{{ctx.payload.get_time_period.hits.hits.0.fields.upper_time.0}}"
-                              }
-                            }
-                          },
-                          {
-                            "terms": {
-                              "user_server": [
-                                "{{#ctx.payload.user_server_logons.aggregations.user_server.buckets}}{{key}}",
-                                "{{/ctx.payload.user_server_logons.aggregations.user_server.buckets}}"
-                              ]
-                            }
-                          },
-                          {
-                            "range": {
-                              "@timestamp": {
-                                "lt": "now/d"
-                              }
+            }
+          },
+          "new_user_server_logons": {
+            "search": {
+              "request": {
+                "indices": [
+                  "log"
+                ],
+                "body": {
+                  "query": {
+                    "bool": {
+                      "filter": [
+                        {
+                          "range": {
+                            "time": {
+                              "gte": "{{ctx.payload.get_time_period.hits.hits.0.fields.lower_time.0}}",
+                              "lte": "{{ctx.payload.get_time_period.hits.hits.0.fields.upper_time.0}}"
                             }
                           }
-                        ]
-                      }
-                    },
-                    "aggs": {
-                      "user_server": {
-                        "terms": {
-                          "field": "user_server",
-                          "size": 1
+                        },
+                        {
+                          "terms": {
+                            "user_server": [
+                              "{{#ctx.payload.user_server_logons.aggregations.user_server.buckets}}{{key}}",
+                              "{{/ctx.payload.user_server_logons.aggregations.user_server.buckets}}"
+                            ]
+                          }
+                        },
+                        {
+                          "range": {
+                            "@timestamp": {
+                              "lt": "now/d"
+                            }
+                          }
                         }
+                      ]
+                    }
+                  },
+                  "aggs": {
+                    "user_server": {
+                      "terms": {
+                        "field": "user_server",
+                        "size": 1000
                       }
-                    },
-                    "size": 0
-                  }
+                    }
+                  },
+                  "size": 0
                 }
               }
             }
           }
-        ]
-      }
-    },
+        }
+      ]
+    }
+  },
     "condition": {
       "script": {
         "inline":"return ctx.payload.user_server_logons.aggregations.user_server.buckets.size() != ctx.payload.new_user_server_logons.aggregations.user_server.buckets.size();",

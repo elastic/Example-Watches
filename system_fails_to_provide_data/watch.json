@@ -58,14 +58,18 @@
   },
   "condition": {
     "script": {
-      "inline": "return ctx.payload.aggregations.periods.buckets.history.hosts.buckets.size() > ctx.payload.aggregations.periods.buckets.last_period.hosts.buckets.size();"
+      "inline": "return ctx.payload.aggregations.periods.buckets.history.hosts.buckets.size() > ctx.payload.aggregations.periods.buckets.last_period.hosts.buckets.size();",
+      "lang": "groovy"
     }
   },
   "throttle_period": "5m",
   "actions": {
     "log": {
       "transform": {
-      "script": "history=ctx.payload.aggregations.periods.buckets.history.hosts.buckets.collect({it.key}); last_period=ctx.payload.aggregations.periods.buckets.last_period.hosts.buckets.collect({it.key}); history.intersect(last_period).each({history.remove(it)}); return history;"
+      "script": {
+        "inline":"history=ctx.payload.aggregations.periods.buckets.history.hosts.buckets.collect({it.key}); last_period=ctx.payload.aggregations.periods.buckets.last_period.hosts.buckets.collect({it.key}); history.intersect(last_period).each({history.remove(it)}); return history;",
+        "lang":"groovy"
+      }
     },
       "logging": {
         "text": "Systems not responding in the last {{ctx.metadata.last_period}} minutes:{{#ctx.payload._value}}{{.}}:{{/ctx.payload._value}}"
