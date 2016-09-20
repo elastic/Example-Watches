@@ -22,10 +22,16 @@
                     "size": 1,
                     "script_fields": {
                       "upper_time": {
-                        "script": "date = new Date(); date.setMinutes(date.getMinutes()+30); date.format('HH:mm:ssZ');"
+                        "script": {
+                          "inline": "date = new Date(); date.setMinutes(date.getMinutes()+30); date.format('HH:mm:ssZ');",
+                          "lang": "groovy"
+                        }
                       },
                       "lower_time": {
-                        "script": "date = new Date(); date.setMinutes(date.getMinutes()-30); date.format('HH:mm:ssZ');"
+                        "script": {
+                          "inline": "date = new Date(); date.setMinutes(date.getMinutes()-30); date.format('HH:mm:ssZ');",
+                          "lang": "groovy"
+                        }
                       }
                     }
                   }
@@ -99,7 +105,7 @@
                       "user_server": {
                         "terms": {
                           "field": "user_server",
-                          "size": 0
+                          "size": 1
                         }
                       }
                     },
@@ -113,10 +119,16 @@
       }
     },
     "condition": {
-      "script": "return ctx.payload.user_server_logons.aggregations.user_server.buckets.size() != ctx.payload.new_user_server_logons.aggregations.user_server.buckets.size();"
+      "script": {
+        "inline":"return ctx.payload.user_server_logons.aggregations.user_server.buckets.size() != ctx.payload.new_user_server_logons.aggregations.user_server.buckets.size();",
+        "lang" : "groovy"
+      }
     },
     "transform": {
-      "script": "new_starts = ctx.payload.user_server_logons.aggregations.user_server.buckets.collect({it.key}) - ctx.payload.new_user_server_logons.aggregations.user_server.buckets.collect({it.key}); response=[:]; response['new_starts']=new_starts.collect({it.replace('_',' on server ')}); response['lower_time']=ctx.payload.get_time_period.hits.hits[0].fields.lower_time[0]; response['upper_time']=ctx.payload.get_time_period.hits.hits[0].fields.upper_time[0];  return response"
+      "script": {
+        "inline":"new_starts = ctx.payload.user_server_logons.aggregations.user_server.buckets.collect({it.key}) - ctx.payload.new_user_server_logons.aggregations.user_server.buckets.collect({it.key}); response=[:]; response['new_starts']=new_starts.collect({it.replace('_',' on server ')}); response['lower_time']=ctx.payload.get_time_period.hits.hits[0].fields.lower_time[0]; response['upper_time']=ctx.payload.get_time_period.hits.hits[0].fields.upper_time[0];  return response",
+        "lang": "groovy"
+      }
     },
     "actions": {
       "log": {

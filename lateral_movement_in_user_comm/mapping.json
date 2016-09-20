@@ -12,7 +12,7 @@
         },
         "time": {
           "type": "date",
-          "format": "HH:mm:ss"
+          "format": "HH:mm:ss||strict_time_no_millis"
         }
       }
     }
