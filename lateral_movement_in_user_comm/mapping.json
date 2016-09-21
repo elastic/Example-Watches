@@ -3,8 +3,7 @@
     "log": {
       "properties": {
         "user_server": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "keyword"
         },
         "@timestamp": {
           "type": "date",

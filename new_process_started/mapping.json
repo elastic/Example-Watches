@@ -6,12 +6,10 @@
           "type": "date"
         },
         "process_host": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "keyword"
         },
         "event_type": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "keyword"
         }
       }
     }

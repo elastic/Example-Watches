@@ -1,0 +1,92 @@
+{
+    "metadata": {
+        "threshold": 5,
+        "interval": "20m",
+        "window": "2m"
+    },
+    "trigger": {
+        "schedule": {
+            "interval": "15s"
+        }
+    },
+    "input": {
+        "search": {
+            "request": {
+                "search_type": "query_then_fetch",
+                "indices": [
+                    "topbeat-*"
+                ],
+                "types": [
+                    "system"
+                ],
+                "body": {
+                    "size": 0,
+                    "query": {
+                        "filtered": {
+                            "filter": {
+                                "range": {
+                                    "@timestamp": {
+                                        "gte": "now-{{ctx.metadata.interval}}",
+                                        "lte": "now"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "aggs": {
+                        "per_host": {
+                            "terms": {
+                                "field": "beat.hostname",
+                                "size": 10
+                            },
+                            "aggs": {
+                                "per_minute": {
+                                    "date_histogram": {
+                                        "field": "@timestamp",
+                                        "interval": "{{ctx.metadata.window}}"
+                                    },
+                                    "aggs": {
+                                        "iowait": {
+                                            "max": {
+                                                "script": "(doc['cpu.iowait'].value\/(doc['cpu.user'].value + doc['cpu.nice'].value + doc['cpu.system'].value + doc['cpu.idle'].value + doc['cpu.iowait'].value + doc['cpu.irq'].value + doc['cpu.softirq'].value + doc['cpu.steal'].value))*100"
+                                            }
+                                        },
+                                        "iowait_deriv": {
+                                            "derivative": {
+                                                "buckets_path": "iowait"
+                                            }
+                                        }
+                                    }
+                                },
+                                "avg_iowait": {
+                                    "avg_bucket": {
+                                        "buckets_path": "per_minute>iowait"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "condition": {
+        "script": {
+            "lang":"groovy",
+            "inline":"def hosts = ctx.payload.aggregations.per_host.buckets; if (hosts.size() == 0) return false; if (hosts.findAll {it.per_minute.buckets[-1].iowait_deriv.value > ctx.metadata.threshold}) {return true} else {return false};"
+        }
+    },
+    "actions": {
+        "log": {
+            "transform": {
+                "script": {
+                    "inline":"def hosts = ctx.payload.aggregations.per_host.buckets; if (hosts.size() == 0) return false; return hosts.findAll({it.per_minute.buckets[-1].iowait_deriv.value > ctx.metadata.threshold}).collect({it.value = it.per_minute.buckets[-1].iowait_deriv.value; it.value = it.value.round(2); it});",
+                    "lang":"groovy"
+                }
+            },
+	    "logging": {
+		  "text": "The following hosts iowait cpu usage has increased dramatically over the last {{ctx.metadata.interval}}:\n\n  {{#ctx.payload._value}}{{key}}: {{value}}% iowait change\n{{\/ctx.payload._value}}"
+	      }
+        }
+    }
+}

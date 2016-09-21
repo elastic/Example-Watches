@@ -7,11 +7,10 @@
           "format": "strict_date_optional_time||epoch_millis"
         },
         "message": {
-          "type": "string"
+          "type": "text"
         },
         "loglevel":{
-          "type": "string",
-          "index":"not_analyzed"
+          "type": "keyword"
         }
       }
     }

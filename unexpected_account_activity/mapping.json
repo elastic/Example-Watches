@@ -3,12 +3,10 @@
     "login": {
       "properties": {
         "event_type": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "keyword"
         },
          "user": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "keyword"
         },
         "@timestamp":{
           "type":"date"

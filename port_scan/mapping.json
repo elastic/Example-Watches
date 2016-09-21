@@ -3,12 +3,10 @@
     "connection": {
       "properties": {
         "source_dest": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "keyword"
         },
         "source_dest_port": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "keyword"
         },
         "port": {
           "type": "integer"
