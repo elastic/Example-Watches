@@ -37,7 +37,7 @@ The parent directory includes the following utility scripts:
 * New User-Server Communication - A watch which aims to detect if a user logs onto a server for the first time within the current time period.
 * System Fails to Provide Data - A watch which alerts if a system, which has previously sent data, fails to send events.
 * File System Usage - A watch which alerts if a systems filesystem usage exceeds a predetermined percentage threshold.
-
+* IO Wait time increases - A watch which alerts if a systems iowait time rises beyond a predetermined threshold.
 #Testing
 
 Each watch includes a test directory containing a set of tests expressed as JSON files.  Each JSON file describes a single isolated test and includes:
