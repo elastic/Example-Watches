@@ -4,141 +4,23 @@
   "index":"topbeat-test",
   "type":"system",
   "match": true,
+  "comments":"Functional test only",
   "watch_file":"./cpu_iowait_hosts/watch.json",
   "events":[
   {
-    "offset":-1200,
+    "offset":-120,
     "beat":{
       "hostname":"serverA"
     },
     "cpu":{
-      "iowait":"5",
-      "user":"",
-      "nice":"",
-      "system":"",
-      "idle":"",
-      "irq":"",
-      "softirq":"",
-      "steal":""
-    }
-  },
-  {
-    "offset":-1080,
-    "beat":{
-      "hostname":"serverA"
-    },
-    "cpu":{
-      "iowait":"5",
-      "user":"",
-      "nice":"",
-      "system":"",
-      "idle":"",
-      "irq":"",
-      "softirq":"",
-      "steal":""
-    }
-  },
-  {
-    "offset":-960,
-    "beat":{
-      "hostname":"serverA"
-    },
-    "cpu":{
-      "iowait":"5",
-      "user":"",
-      "nice":"",
-      "system":"",
-      "idle":"",
-      "irq":"",
-      "softirq":"",
-      "steal":""
-    }
-  },
-  {
-    "offset":-840,
-    "beat":{
-      "hostname":"serverA"
-    },
-    "cpu":{
-      "iowait":"5",
-      "user":"",
-      "nice":"",
-      "system":"",
-      "idle":"",
-      "irq":"",
-      "softirq":"",
-      "steal":""
-    }
-  },
-  {
-    "offset":-720,
-    "beat":{
-      "hostname":"serverA"
-    },
-    "cpu":{
-      "iowait":"5",
-      "user":"",
-      "nice":"",
-      "system":"",
-      "idle":"",
-      "irq":"",
-      "softirq":"",
-      "steal":""
-    }
-  },
-  {
-    "offset":-600,
-    "beat":{
-      "hostname":"serverA"
-    },
-    "cpu":{
-      "iowait":"5",
-      "user":"",
-      "nice":"",
-      "system":"",
-      "idle":"",
-      "irq":"",
-      "softirq":"",
-      "steal":""
-    }
-  },
-  {
-    "offset":-480,
-    "beat":{
-      "hostname":"serverA"
-    },
-    "loglevel":"ERROR"
-  },
-  {
-    "offset":-360,
-    "beat":{
-      "hostname":"serverA"
-    },
-    "cpu":{
-      "iowait":"5",
-      "user":"",
-      "nice":"",
-      "system":"",
-      "idle":"",
-      "irq":"",
-      "softirq":"",
-      "steal":""
-    }
-  },
-  {
-    "offset":-240,
-    "beat":{
-      "hostname":"serverA"
-    },
-    "cpu":{
-      "iowait":"5",
-      "user":"",
-      "nice":"",
-      "system":"",
-      "idle":"",
-      "irq":"",
-      "softirq":"",
-      "steal":""
+      "iowait":"0",
+      "user":"5",
+      "nice":"6",
+      "system":"7",
+      "idle":"3",
+      "irq":"5",
+      "softirq":"10",
+      "steal":"5"
     }
   },
   {
@@ -147,33 +29,32 @@
       "hostname":"serverA"
     },
     "cpu":{
-      "iowait":"5",
-      "user":"",
-      "nice":"",
-      "system":"",
-      "idle":"",
-      "irq":"",
-      "softirq":"",
-      "steal":""
+      "iowait":"0",
+      "user":"5",
+      "nice":"6",
+      "system":"7",
+      "idle":"3",
+      "irq":"5",
+      "softirq":"10",
+      "steal":"5"
     }
   },
   {
-    "offset":-60,
     "beat":{
       "hostname":"serverA"
     },
     "cpu":{
       "iowait":"5",
-      "user":"",
-      "nice":"",
-      "system":"",
-      "idle":"",
-      "irq":"",
-      "softirq":"",
-      "steal":""
+      "user":"5",
+      "nice":"10",
+      "system":"10",
+      "idle":"10",
+      "irq":"20",
+      "softirq":"10",
+      "steal":"10"
     }
   }
   ],
-"expected_response":"3 Errors have occured in the logs:4:1:3:"
+"expected_response":"The following hosts iowait cpu usage has increased dramatically over the last 2m: serverA:6.25% iowait change:"
 }
 

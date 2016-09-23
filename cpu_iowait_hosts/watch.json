@@ -1,12 +1,12 @@
 {
     "metadata": {
         "threshold": 5,
-        "interval": "20m",
-        "window": "2m"
+        "interval": "2m",
+        "window": "4m"
     },
     "trigger": {
         "schedule": {
-            "interval": "15s"
+            "interval": "2m"
         }
     },
     "input": {
@@ -20,52 +20,49 @@
                     "system"
                 ],
                 "body": {
-                    "size": 0,
-                    "query": {
-                        "filtered": {
-                            "filter": {
-                                "range": {
-                                    "@timestamp": {
-                                        "gte": "now-{{ctx.metadata.interval}}",
-                                        "lte": "now"
-                                    }
+                  "size": 0,
+                  "aggs": {
+                    "per_host": {
+                      "aggs": {
+                        "per_minute": {
+                          "date_histogram": {
+                            "field": "@timestamp",
+                            "interval": "{{ctx.metadata.interval}}"
+                          },
+                          "aggs": {
+                            "iowait": {
+                              "max": {
+                                "script": {
+                                  "inline":"(doc['cpu.iowait'].value\/(doc['cpu.user'].value + doc['cpu.nice'].value + doc['cpu.system'].value + doc['cpu.idle'].value + doc['cpu.iowait'].value + doc['cpu.irq'].value + doc['cpu.softirq'].value + doc['cpu.steal'].value))*100"
                                 }
-                            }
-                        }
-                    },
-                    "aggs": {
-                        "per_host": {
-                            "terms": {
-                                "field": "beat.hostname",
-                                "size": 10
+                              }
                             },
-                            "aggs": {
-                                "per_minute": {
-                                    "date_histogram": {
-                                        "field": "@timestamp",
-                                        "interval": "{{ctx.metadata.window}}"
-                                    },
-                                    "aggs": {
-                                        "iowait": {
-                                            "max": {
-                                                "script": "(doc['cpu.iowait'].value\/(doc['cpu.user'].value + doc['cpu.nice'].value + doc['cpu.system'].value + doc['cpu.idle'].value + doc['cpu.iowait'].value + doc['cpu.irq'].value + doc['cpu.softirq'].value + doc['cpu.steal'].value))*100"
-                                            }
-                                        },
-                                        "iowait_deriv": {
-                                            "derivative": {
-                                                "buckets_path": "iowait"
-                                            }
-                                        }
-                                    }
-                                },
-                                "avg_iowait": {
-                                    "avg_bucket": {
-                                        "buckets_path": "per_minute>iowait"
-                                    }
-                                }
+                            "iowait_deriv": {
+                              "derivative": {
+                                "buckets_path": "iowait"
+                              }
                             }
+                          }
                         }
+                      },
+                      "terms": {
+                        "size": 10,
+                        "field": "beat.hostname"
+                      }
                     }
+                  },
+                  "query": {
+                    "bool": {
+                      "filter": {
+                        "range": {
+                          "@timestamp": {
+                            "lte": "now",
+                            "gte": "now-{{ctx.metadata.window}}"
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
             }
         }
@@ -85,7 +82,7 @@
                 }
             },
 	    "logging": {
-		  "text": "The following hosts iowait cpu usage has increased dramatically over the last {{ctx.metadata.interval}}:\n\n  {{#ctx.payload._value}}{{key}}: {{value}}% iowait change\n{{\/ctx.payload._value}}"
+		  "text": "The following hosts iowait cpu usage has increased dramatically over the last {{ctx.metadata.interval}}: {{#ctx.payload._value}}{{key}}:{{value}}% iowait change:{{\/ctx.payload._value}}"
 	      }
         }
     }

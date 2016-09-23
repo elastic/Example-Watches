@@ -53,15 +53,15 @@ The run_test.py performs the following when running a test file:
 
 1. Deletes the index specified.
 2. Loads the required mapping.
-3. Loads the dataset, setting the timestamps of the events to the current+offset.
-4. Refreshes the index.
-5. Adds the watch
-6. Executes the watch
-7. Confirms the watch matches the intended outcome. matched and confirms the output of the watch (log text)
+3. Loads any declared ingest pipeline used to modify the test data.
+4. Loads the dataset, setting the timestamps of the events to the current+offset.
+5. Refreshes the index.
+6. Adds the watch
+7. Executes the watch
+8. Confirms the watch matches the intended outcome. matched and confirms the output of the watch (log text)
 
 ##Requirements
 
 * >= python 3.5.2
 * elasticsearch-py 5.0
 * elasticsearch-x-pack-py 5.0
-* Groovy inline scripting enabled in Elasticsearch.
