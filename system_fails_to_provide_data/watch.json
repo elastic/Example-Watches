@@ -58,8 +58,7 @@
   },
   "condition": {
     "script": {
-      "inline": "return ctx.payload.aggregations.periods.buckets.history.hosts.buckets.size() > ctx.payload.aggregations.periods.buckets.last_period.hosts.buckets.size();",
-      "lang": "groovy"
+      "inline": "return ctx.payload.aggregations.periods.buckets.history.hosts.buckets.size() > ctx.payload.aggregations.periods.buckets.last_period.hosts.buckets.size();"
     }
   },
   "throttle_period": "5m",
@@ -67,8 +66,7 @@
     "log": {
       "transform": {
       "script": {
-        "inline":"history=ctx.payload.aggregations.periods.buckets.history.hosts.buckets.collect({it.key}); last_period=ctx.payload.aggregations.periods.buckets.last_period.hosts.buckets.collect({it.key}); history.intersect(last_period).each({history.remove(it)}); return history;",
-        "lang":"groovy"
+        "inline":"def history=ctx.payload.aggregations.periods.buckets.history.hosts.buckets.stream().map(e -> e.key); def last_period=ctx.payload.aggregations.periods.buckets.last_period.hosts.buckets.stream().map(e -> e.key).collect(Collectors.toList()); return history.filter(p -> !last_period.contains(p)).collect(Collectors.toList());"
       }
     },
       "logging": {
