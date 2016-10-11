@@ -105,14 +105,12 @@
   },
   "condition": {
     "script": {
-      "inline":"return ctx.payload.started_processes.aggregations.process_hosts.buckets.size() != ctx.payload.history_started_processes.aggregations.process_hosts.buckets.size();",
-      "lang":"groovy"
+      "inline":"return ctx.payload.started_processes.aggregations.process_hosts.buckets.size() != ctx.payload.history_started_processes.aggregations.process_hosts.buckets.size();"
     }
   },
   "transform": {
     "script": {
-      "inline":"new_starts=ctx.payload.started_processes.aggregations.process_hosts.buckets.collect({it.key}) - ctx.payload.history_started_processes.aggregations.process_hosts.buckets.collect({it.key}); return new_starts.collect({it.replace('-',' on server ')});",
-      "lang":"groovy"
+      "inline":"def history=ctx.payload.history_started_processes.aggregations.process_hosts.buckets.stream().map(p -> p.key).collect(Collectors.toList()); def new_starts=ctx.payload.started_processes.aggregations.process_hosts.buckets.stream().map(e -> e.key).filter(p -> !history.contains(p)); return new_starts.map(p -> p.replace('-',' on server ')).collect(Collectors.toList());"
     }
   },
   "actions": {
