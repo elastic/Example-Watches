@@ -15,7 +15,7 @@ This watch can be adapted to work with either topbeat or metricbeat data.
 A mapping is provided in mapping.json.  Watches require data producing the following fields:
 
 * @timestamp - authorative date field for each log message
-* beat.hostname (string not_analyzed) - hostname of data.
+* beat.hostname (string not_analyzed) - The host for which the document represents.
 
 CPU statistics configured as double (with doc values) as produced by topbeat/metricbeat:
 

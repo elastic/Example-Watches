@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "used_percent": 0.9,
+    "threshold": 0.9,
     "window_period": "5m"
   },
   "trigger": {
@@ -48,7 +48,7 @@
                 {
                   "range": {
                     "used_p": {
-                      "gte": "{{ctx.metadata.used_percent}}"
+                      "gte": "{{ctx.metadata.threshold}}"
                     }
                   }
                 }
@@ -68,7 +68,7 @@
   },
   "transform": {
     "script": {
-      "inline":"def threshold_p = ctx.metadata.used_percent*100; return [ 'threshold': (int)threshold_p, 'hosts': ctx.payload.aggregations.host.buckets.stream().map(p -> [ 'key': p.key, 'disk_usage': (int) (p.disk_usage.value*100)]).collect(Collectors.toList()) ];"
+      "inline":"def threshold_p = ctx.metadata.threshold*100; return [ 'threshold': (int)threshold_p, 'hosts': ctx.payload.aggregations.host.buckets.stream().map(p -> [ 'key': p.key, 'disk_usage': (int) (p.disk_usage.value*100)]).collect(Collectors.toList()) ];"
     }
   },
   "actions": {
