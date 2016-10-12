@@ -64,5 +64,4 @@ The run_test.py performs the following when running a test file:
 ##Requirements
 
 * >= python 3.5.2
-* elasticsearch-py 5.0
-* elasticsearch-x-pack-py 5.0
+* see requirements.txt - Install dependencies through 'pip install -r requirements.txt'
