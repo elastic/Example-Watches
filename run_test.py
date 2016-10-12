@@ -31,6 +31,7 @@ with open(args.test_file,'r') as test_file:
     try:
         es.indices.delete(test['index'])
     except:
+        print("Unable to delete current dataset")
         pass
     with open(test['mapping_file'],'r') as mapping_file:
         es.indices.create(index=test["index"],body=json.loads(mapping_file.read()))
