@@ -1,0 +1,3 @@
+-e git+git@github.com:elastic/elasticsearch-py.git@d4efb81b0695f3d9f64784a35891b732823a9c32#egg=elasticsearch-origin/HEAD
+-e git+git@github.com:elastic/elasticsearch-x-pack-py.git@716256ba71cc35c2e56eada09bccea83214c9215#egg=elasticsearch_xpack-origin/HEAD
+urllib3==1.17
