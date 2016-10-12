@@ -73,8 +73,7 @@
   },
   "condition": {
     "script": {
-      "inline": "adds=ctx.payload.aggregations.event_types.buckets.add.users.buckets.collect({it.key}); removes=ctx.payload.aggregations.event_types.buckets.remove.users.buckets.collect({it.key}); return adds.intersect(removes).size() > 0;",
-      "lang":"groovy"
+      "inline": "def removes=ctx.payload.aggregations.event_types.buckets.remove.users.buckets.stream().map(p -> p.key).collect(Collectors.toList()); return ctx.payload.aggregations.event_types.buckets.add.users.buckets.stream().map(p -> p.key).filter(p -> removes.contains(p)).toArray().length > 0; "
     }
   },
   "throttle_period": "5m",
@@ -82,8 +81,7 @@
     "log": {
       "transform": {
         "script": {
-          "inline":"adds=ctx.payload.aggregations.event_types.buckets.add.users.buckets.collect({it.key}); removes=ctx.payload.aggregations.event_types.buckets.remove.users.buckets.collect({it.key}); return adds.intersect(removes)",
-          "lang":"groovy"
+          "inline":"def removes=ctx.payload.aggregations.event_types.buckets.remove.users.buckets.stream().map(p -> p.key).collect(Collectors.toList()); return ctx.payload.aggregations.event_types.buckets.add.users.buckets.stream().map(p -> p.key).filter(p -> removes.contains(p)).toArray();"
         }
       },
       "logging": {
