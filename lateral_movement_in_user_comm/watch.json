@@ -11,29 +11,30 @@
     "input": {
       "chain": {
         "inputs": [
-        {
-          "get_time_period": {
-            "search": {
-              "request": {
-                "indices": [
-                  "log"
-                ],
-                "body": {
-                  "size": 1,
-                  "script_fields": {
-                    "upper_time": {
-                      "script": {
-                        "inline": "return LocalDateTime.parse(params.current_time.substring(0,19)).plusMinutes(30).format(DateTimeFormatter.ofPattern('HH:mm:ss'))+'Z';",
-                        "params": {
-                          "current_time": "{{ctx.trigger.triggered_time}}"
+          {
+            "get_time_period": {
+              "search": {
+                "request": {
+                  "indices": [
+                    "log"
+                  ],
+                  "body": {
+                    "size": 1,
+                    "script_fields": {
+                      "upper_time": {
+                        "script": {
+                          "inline": "return LocalDateTime.parse(params.current_time.substring(0,19)).plusMinutes(30).format(DateTimeFormatter.ofPattern('HH:mm:ss'))+'Z';",
+                          "params": {
+                            "current_time": "{{ctx.trigger.triggered_time}}"
+                          }
                         }
-                      }
-                    },
-                    "lower_time": {
-                      "script": {
-                        "inline": "return LocalDateTime.parse(params.current_time.substring(0,19)).minusMinutes(30).format(DateTimeFormatter.ofPattern('HH:mm:ss'))+'Z';",
-                        "params" : {
-                          "current_time": "{{ctx.trigger.triggered_time}}"
+                      },
+                      "lower_time": {
+                        "script": {
+                          "inline": "return LocalDateTime.parse(params.current_time.substring(0,19)).minusMinutes(30).format(DateTimeFormatter.ofPattern('HH:mm:ss'))+'Z';",
+                          "params": {
+                            "current_time": "{{ctx.trigger.triggered_time}}"
+                          }
                         }
                       }
                     }
@@ -42,86 +43,86 @@
               }
             }
           },
-          "user_server_logons": {
-            "search": {
-              "request": {
-                "indices": [
-                  "log"
-                ],
-                "body": {
-                  "query": {
-                    "range": {
-                      "@timestamp": {
-                        "gte": "now-{{ctx.metadata.time_period}}"
+          {
+            "user_server_logons": {
+              "search": {
+                "request": {
+                  "indices": [
+                    "log"
+                  ],
+                  "body": {
+                    "query": {
+                      "range": {
+                        "@timestamp": {
+                          "gte": "now-{{ctx.metadata.time_period}}"
+                        }
                       }
-                    }
-                  },
-                  "aggs": {
-                    "user_server": {
-                      "terms": {
-                        "field": "user_server",
-                        "size": 1000
+                    },
+                    "aggs": {
+                      "user_server": {
+                        "terms": {
+                          "field": "user_server",
+                          "size": 1000
+                        }
                       }
-                    }
-                  },
-                  "size": 0
+                    },
+                    "size": 0
+                  }
                 }
               }
             }
           },
-          "new_user_server_logons": {
-            "search": {
-              "request": {
-                "indices": [
-                  "log"
-                ],
-                "body": {
-                  "query": {
-                    "bool": {
-                      "filter": [
-
-
-
-                        {
-                          "range": {
-                            "time": {
-                              "gte": "{{ctx.payload.get_time_period.hits.hits.0.fields.lower_time.0}}",
-                              "lte": "{{ctx.payload.get_time_period.hits.hits.0.fields.upper_time.0}}"
+          {
+            "new_user_server_logons": {
+              "search": {
+                "request": {
+                  "indices": [
+                    "log"
+                  ],
+                  "body": {
+                    "query": {
+                      "bool": {
+                        "filter": [
+                          {
+                            "range": {
+                              "time": {
+                                "gte": "{{ctx.payload.get_time_period.hits.hits.0.fields.lower_time.0}}",
+                                "lte": "{{ctx.payload.get_time_period.hits.hits.0.fields.upper_time.0}}"
+                              }
+                            }
+                          },
+                          {
+                            "terms": {
+                              "user_server": [
+                                "{{#ctx.payload.user_server_logons.aggregations.user_server.buckets}}{{key}}",
+                                "{{/ctx.payload.user_server_logons.aggregations.user_server.buckets}}"
+                              ]
+                            }
+                          },
+                          {
+                            "range": {
+                              "@timestamp": {
+                                "lt": "now/d"
+                              }
                             }
                           }
-                        },
-                        {
-                          "terms": {
-                            "user_server": [
-                              "{{#ctx.payload.user_server_logons.aggregations.user_server.buckets}}{{key}}",
-                              "{{/ctx.payload.user_server_logons.aggregations.user_server.buckets}}"
-                            ]
-                          }
-                        },
-                        {
-                          "range": {
-                            "@timestamp": {
-                              "lt": "now/d"
-                            }
-                          }
-                        }
-                      ]
-                    }
-                  },
-                  "aggs": {
-                    "user_server": {
-                      "terms": {
-                        "field": "user_server",
-                        "size": 1000
+                        ]
                       }
-                    }
-                  },
-                  "size": 0
+                    },
+                    "aggs": {
+                      "user_server": {
+                        "terms": {
+                          "field": "user_server",
+                          "size": 1000
+                        }
+                      }
+                    },
+                    "size": 0
+                  }
                 }
               }
             }
           }
-        }
       ]
     }
     },
