@@ -9,8 +9,8 @@
       }
     },
     "input": {
-    "chain": {
-      "inputs": [
+      "chain": {
+        "inputs": [
         {
           "get_time_period": {
             "search": {
@@ -23,14 +23,18 @@
                   "script_fields": {
                     "upper_time": {
                       "script": {
-                        "inline": "date = new Date(); date.setMinutes(date.getMinutes()+30); date.format('HH:mm:ssZ');",
-                        "lang": "groovy"
+                        "inline": "return LocalDateTime.parse(params.current_time.substring(0,19)).plusMinutes(30).format(DateTimeFormatter.ofPattern('HH:mm:ss'))+'Z';",
+                        "params": {
+                          "current_time": "{{ctx.trigger.triggered_time}}"
+                        }
                       }
                     },
                     "lower_time": {
                       "script": {
-                        "inline": "date = new Date(); date.setMinutes(date.getMinutes()-30); date.format('HH:mm:ssZ');",
-                        "lang": "groovy"
+                        "inline": "return LocalDateTime.parse(params.current_time.substring(0,19)).minusMinutes(30).format(DateTimeFormatter.ofPattern('HH:mm:ss'))+'Z';",
+                        "params" : {
+                          "current_time": "{{ctx.trigger.triggered_time}}"
+                        }
                       }
                     }
                   }
@@ -75,6 +79,9 @@
                   "query": {
                     "bool": {
                       "filter": [
+
+
+
                         {
                           "range": {
                             "time": {
@@ -117,23 +124,21 @@
         }
       ]
     }
-  },
+    },
     "condition": {
       "script": {
-        "inline":"return ctx.payload.user_server_logons.aggregations.user_server.buckets.size() != ctx.payload.new_user_server_logons.aggregations.user_server.buckets.size();",
-        "lang" : "groovy"
+        "inline":"return ctx.payload.user_server_logons.aggregations.user_server.buckets.size() != ctx.payload.new_user_server_logons.aggregations.user_server.buckets.size();"
       }
     },
     "transform": {
       "script": {
-        "inline":"new_starts = ctx.payload.user_server_logons.aggregations.user_server.buckets.collect({it.key}) - ctx.payload.new_user_server_logons.aggregations.user_server.buckets.collect({it.key}); response=[:]; response['new_starts']=new_starts.collect({it.replace('_',' on server ')}); response['lower_time']=ctx.payload.get_time_period.hits.hits[0].fields.lower_time[0]; response['upper_time']=ctx.payload.get_time_period.hits.hits[0].fields.upper_time[0];  return response",
-        "lang": "groovy"
+        "inline":"def history = ctx.payload.new_user_server_logons.aggregations.user_server.buckets.stream().map(p -> p.key).collect(Collectors.toList()); def response=[:]; response['lower_time']=ctx.payload.get_time_period.hits.hits[0].fields.lower_time[0]; response['upper_time']=ctx.payload.get_time_period.hits.hits[0].fields.upper_time[0]; response['new_starts']=ctx.payload.user_server_logons.aggregations.user_server.buckets.stream().map(p -> p.key).filter(p -> !history.contains(p)).map(p -> p.replace('_',' on server ')).collect(Collectors.toList());  return response"
       }
     },
     "actions": {
       "log": {
         "logging": {
-          "text": "The following users have logged onto a new server for the first time within the time period: {{#ctx.payload.new_starts}}{{.}}:{{/ctx.payload.new_starts}}"
+          "text": "{{ctx.metadata.triggered_time}}The following users have logged onto a new server for the first time within the time period: {{#ctx.payload.new_starts}}{{.}}:{{/ctx.payload.new_starts}}"
         }
       }
     }

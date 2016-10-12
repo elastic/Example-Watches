@@ -68,16 +68,14 @@
   },
   "transform": {
     "script": {
-      "inline":"threshold_p = ctx.metadata.used_percent*100; def hosts_list = ctx.payload.aggregations.host.buckets.collect { [ key: it.key, disk_usage: String.format('%.0f', it.disk_usage.value*100) ] }; return [ threshold: String.format('%.0f', threshold_p), hosts: hosts_list ];",
-      "lang":"groovy"
+      "inline":"def threshold_p = ctx.metadata.used_percent*100; return [ 'threshold': (int)threshold_p, 'hosts': ctx.payload.aggregations.host.buckets.stream().map(p -> [ 'key': p.key, 'disk_usage': (int) (p.disk_usage.value*100)]).collect(Collectors.toList()) ];"
     }
   },
   "actions": {
     "log": {
       "logging": {
         "text": {
-          "inline": "Some hosts are over {{ctx.payload.threshold}}% utilized:{{#ctx.payload.hosts}}{{disk_usage}}%-{{key}}:{{/ctx.payload.hosts}}",
-          "lang": "groovy"
+          "inline": "Some hosts are over {{ctx.payload.threshold}}% utilized:{{#ctx.payload.hosts}}{{disk_usage}}%-{{key}}:{{/ctx.payload.hosts}}"
         }
       }
     }
