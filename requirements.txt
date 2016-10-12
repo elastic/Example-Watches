@@ -1,3 +1,12 @@
--e git+git@github.com:elastic/elasticsearch-py.git@d4efb81b0695f3d9f64784a35891b732823a9c32#egg=elasticsearch-origin/HEAD
--e git+git@github.com:elastic/elasticsearch-x-pack-py.git@716256ba71cc35c2e56eada09bccea83214c9215#egg=elasticsearch_xpack-origin/HEAD
+-e git+git@github.com:elastic/elasticsearch-py.git#egg=elasticsearch
+-e git+git@github.com:elastic/elasticsearch-x-pack-py.git#egg=elasticsearch_xpack
+idna==2.1
+lxml==3.6.4
+ndg-httpsclient==0.4.2
+ordereddict==1.1
+protobuf==3.1.0.post1
+pyOpenSSL==16.1.0
+pyasn1==0.1.9
+simplejson==3.8.2
+six==1.10.0
 urllib3==1.17

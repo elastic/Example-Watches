@@ -6,7 +6,7 @@ This package provides a collection of example  watches.  These watches have been
 
 #Generic Assumptions
 
-* Elasticsearch 5.0b1
+* Elasticsearch 5.0rc1
 * All watches use the log output for purposes of testing. Replace with output e.g. email, as required.
 * Painless inline script is enabled for clarity and testing only.  All scripts should be moved to hosted script (file or indexed) for production deployment.
 * All watches assume Watcher is running in the same cluster as that in which the relevant data is hosted.  They all therefore use the search input.  In a production deployment this is subject to change i.e. a http input maybe required.
@@ -64,5 +64,4 @@ The run_test.py performs the following when running a test file:
 ##Requirements
 
 * >= python 3.5.2
-* elasticsearch-py 5.0
-* elasticsearch-x-pack-py 5.0
+* see requirements.txt - Install dependencies through 'pip install -r requirements.txt'
