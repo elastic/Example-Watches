@@ -6,7 +6,7 @@ This package provides a collection of example  watches.  These watches have been
 
 #Generic Assumptions
 
-* Elasticsearch 5.0
+* Elasticsearch 5.0 + x-pack
 * All watches use the log output for purposes of testing. Replace with output e.g. email, as required.
 * Painless scripts, located within the "scripts" folder of each watch, must be indexed first.  
 * All watches assume Watcher is running in the same cluster as that in which the relevant data is hosted.  They all therefore use the search input.  In a production deployment this is subject to change i.e. a http input maybe required.
@@ -24,12 +24,13 @@ In each watch directory the following is provided:
 
 The parent directory includes the following utility scripts:
 
-* run_test.py - A python script which can be used to run a specific test e.g. python run_test.py --test_file new_process_started/tests/test1.json 
-* load_watch.sh.  Utility script for loading a watch to a local Elasticsearch cluster.  Each watch can be loaded by running load_watch.sh <watch folder name>.  This will also index any scripts. Username and password for the cluster can be specified as parameters e.g.
-load_watch.sh <watch folder name> <username> <password>.  If not specified these default to the x-pack default of "elastic" and "changeme" respectively.
-* run_test.sh - Runs a specified watches tests. Specify watch by directory name e.g. ./run_test.sh port_scan
-* run_all_tests.sh - Runs all tests.
+* run_test.py - A python script which can be used to run a specific test e.g. python run_test.py --test_file new_process_started/tests/test1.json. Include optional username and password with --user and --password parameters.
+* load_watch.sh.  Utility script for loading a watch to a local Elasticsearch cluster.  Each watch can be loaded by running `load_watch.sh <watch folder name>`.  This will also index any scripts. Username and password for the cluster can be specified as parameters e.g.
+`load_watch.sh <watch folder name> <username> <password>`
+* run_test.sh - Runs a specified watches tests. Specify watch by directory name e.g. `run_test.sh port_scan`. Include optional username and password e.g. `run_test.sh port_scan <username> <password>`.
+* run_all_tests.sh - Runs all tests. Include optional username and password e.g. `run_all_tests.sh <username> <password>`.
 
+If username and password are not specified, the above scripts assume the x-pack default of "elastic" and "changeme" respectively.
 
 #Watches
 
@@ -69,5 +70,5 @@ The run_test.py performs the following when running a test file:
 
 ##Requirements
 
-* >= python 3.5.2
-* see requirements.txt - Install dependencies through 'pip install -r requirements.txt'
+* >= python 3.5
+* see requirements.txt - Install dependencies through `pip install -r requirements.txt`
