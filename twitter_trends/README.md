@@ -15,26 +15,6 @@ A template is provided in template.json.  As a minimum tweets must include:
 
 The watch assumes each document in Elasticsearch represents a tweet.  All tweets should be indexed into an index starting with "twitter" and use the type "tweet".
 
-## Demo Data
-
-In addition to the usual tests, two test data sets are provided for demonstration purposes in the demo_data folder.
-
-### Demo 1
-
-A logstash configuration is provided to assist with twitter data collection.  The user is required to specify the following:
-
-* keywords - A list of keywords for which they wish to monitor.  Defaults to 'elasticsearch'.
-* consumer_key - see [here](https://www.elastic.co/guide/en/logstash/current/plugins-inputs-twitter.html#plugins-inputs-twitter-consumer_key) 
-* consumer_secret - see [here](https://www.elastic.co/guide/en/logstash/current/plugins-inputs-twitter.html#plugins-inputs-twitter-consumer_secret)
-* oauth_token - see [here](https://www.elastic.co/guide/en/logstash/current/plugins-inputs-twitter.html#plugins-inputs-twitter-oauth_token)
-* oauth_token_secret - see [here](https://www.elastic.co/guide/en/logstash/current/plugins-inputs-twitter.html#plugins-inputs-twitter-oauth_token_secret)
-* template - path to the template provided.
-* hosts - Assumed to be localhost:9200.  Change as required.
-* flush_size - Defaults to 1 as Elastic volumes are low.
-
-In addition a template file is provided to ensure the data is indexed correctly.
-
-
 ## Other Assumptions
 
 * The approach measures the 90th percentiles over the previous 8hrs of tweets, using a percentiles aggregation.  If the value in the last 5 minutes is greater than 3 std. deviations above this value an alert is raised.  This approach has been tested on Elasticsearch data, where volume is typially low and spikes during specific periods e.g. product releases, and may thus not be robust on other datasets.  Elastic would recommend the user modify this query as required. 

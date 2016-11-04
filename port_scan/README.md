@@ -21,28 +21,6 @@ A mapping is provided in mapping.json.  Watches require data producing the follo
 
 The watch assumes each document in Elasticsearch represents a communication between 2 servers and conform to the above mapping.  
 
-## Demo Data
-
-In addition to the usual tests, two test data sets are provided for demonstration purposes in the demo_data folder.
-
-### Demo 1
-
-The following are located within the demo_data/demo1 folder and provide all of the required content to reproduce the demo:
-
-* [sample.log](ref) - This folder contains utility scripts to allow the indexing and testing of [sample.log](ref). This log file contains approx. 1hr of connection data sourced from http://www.secrepo.com/.  This was inturn sampled from http://www.netresec.com/.  This log file contains a subset of the original file which can be found [here](http://www.secrepo.com/maccdc2012/conn.log.gz).  This file contains numerous potential port scans for the watch to detect. 
-* To facilitate indexing the script 'index.py' is provided.  This script can be used on the larger source file if required using the --file argument.  The script indexes the log file in the required watch format, using the mapping 'mapping.json', offsetting the events against the current system time (by checking the max and min times of the connections in the file) but preserving the period between messages.  This should facilitate viewing in kibana or timelion.  
-
-Once the dataset has been indexed the following can be used to demonstrate the watch:
-
-* The script 'simulate_watch_run.py' identifies the min and max period of the data in the connection index, subsequently running the watch for every time period - effectively moving the watch over the test data as a sliding window, thus reproducing production behaviour.  This script uses the watch 'simulation_watch.json'.  This represents a modified version of the primary watch with minor changes to facilitate the replay behaviour.
-* On detecting port scans within a period, the watch 'simulation_watch.json' logs the events per usual.  However, it additionally indexes the detected port scans into the connection-scans index for visualization and later inspection.  This relies on the mapping for the index being set ('scan_mapping.json').  This index is initialized with the appropriate mapping by the 'simulate_watch_run.py' script automatically.
-
-### Demo 2
-
-The following are located within the demo_data/demo2 folder and provide all of the required content to reproduce the demo:
-
-* TODO - Generate port scan data
-
 ## Other Assumptions
 
 * All events are index "connection" and type "connection".
