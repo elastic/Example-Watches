@@ -19,12 +19,6 @@ A mapping is provided in mapping.json.  Watches require data producing the follo
 
 The watch assumes each document in Elasticsearch represents a process event on a server.
 
-## Demo Data
-
-In addition to the usual tests, two test data sets are provided for demonstration purposes in the demo_data folder.
-
-### Demo 1 - A metricbeat and ingest pipeline configuration configuration is provided.  This can be used to monitor processes on a local server and thus demonstrate the alert locally. A utility script 'load_ingest_pipeline.sh" loads the ingest pipeline to a locally hosted Elasticsearch instance. The user is required to load the watch (using load_watch.sh new_process_started) and [execute](https://www.elastic.co/guide/en/watcher/current/api-rest.html#api-rest-execute-watch) as required.
-
 ## Other Assumptions
 
 * All events are index "log" and type "log".

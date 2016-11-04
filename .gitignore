@@ -5,3 +5,5 @@ dist*
 *.gz
 *.log
 *.local
+/dist/
+/build/
