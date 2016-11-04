@@ -73,7 +73,7 @@
   },
   "condition": {
     "script": {
-      "inline": "def removes=ctx.payload.aggregations.event_types.buckets.remove.users.buckets.stream().map(p -> p.key).collect(Collectors.toList()); return ctx.payload.aggregations.event_types.buckets.add.users.buckets.stream().map(p -> p.key).filter(p -> removes.contains(p)).toArray().length > 0; "
+      "id": "condition"
     }
   },
   "throttle_period": "5m",
@@ -81,7 +81,7 @@
     "log": {
       "transform": {
         "script": {
-          "inline":"def removes=ctx.payload.aggregations.event_types.buckets.remove.users.buckets.stream().map(p -> p.key).collect(Collectors.toList()); return ctx.payload.aggregations.event_types.buckets.add.users.buckets.stream().map(p -> p.key).filter(p -> removes.contains(p)).toArray();"
+          "id":"transform"
         }
       },
       "logging": {

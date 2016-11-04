@@ -5,6 +5,7 @@
   "type":"filesystem",
   "watch_file":"./filesystem_usage/watch.json",
   "comments":"Tests filesystem being above 0.9. Server 1 & 4 should alert as within 60 seconds. Server 2 should not (10 mins). 3rd server should not alert as < 0.9.",
+  "scripts":[{"name":"transform","path":"./filesystem_usage/scripts/transform.json"}],
   "events":[
   {
     "hostname": "test_server1",

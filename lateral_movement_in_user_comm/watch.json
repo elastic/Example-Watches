@@ -23,7 +23,7 @@
                     "script_fields": {
                       "upper_time": {
                         "script": {
-                          "inline": "return LocalDateTime.parse(params.current_time.substring(0,19)).plusMinutes(30).format(DateTimeFormatter.ofPattern('HH:mm:ss'))+'Z';",
+                          "id": "upper_time",
                           "params": {
                             "current_time": "{{ctx.trigger.triggered_time}}"
                           }
@@ -31,7 +31,7 @@
                       },
                       "lower_time": {
                         "script": {
-                          "inline": "return LocalDateTime.parse(params.current_time.substring(0,19)).minusMinutes(30).format(DateTimeFormatter.ofPattern('HH:mm:ss'))+'Z';",
+                          "id": "lower_time",
                           "params": {
                             "current_time": "{{ctx.trigger.triggered_time}}"
                           }
@@ -128,12 +128,12 @@
     },
     "condition": {
       "script": {
-        "inline":"return ctx.payload.user_server_logons.aggregations.user_server.buckets.size() != ctx.payload.new_user_server_logons.aggregations.user_server.buckets.size();"
+        "id":"condition"
       }
     },
     "transform": {
       "script": {
-        "inline":"def history = ctx.payload.new_user_server_logons.aggregations.user_server.buckets.stream().map(p -> p.key).collect(Collectors.toList()); def response=[:]; response['lower_time']=ctx.payload.get_time_period.hits.hits[0].fields.lower_time[0]; response['upper_time']=ctx.payload.get_time_period.hits.hits[0].fields.upper_time[0]; response['new_starts']=ctx.payload.user_server_logons.aggregations.user_server.buckets.stream().map(p -> p.key).filter(p -> !history.contains(p)).map(p -> p.replace('_',' on server ')).collect(Collectors.toList());  return response"
+        "id":"transform"
       }
     },
     "actions": {

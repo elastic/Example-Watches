@@ -5,6 +5,7 @@
   "type":"login",
   "match": true,
   "watch_file":"./unexpected_account_activity/watch.json",
+  "scripts":[{"name":"transform","path":"./unexpected_account_activity/scripts/transform.json"},{"name":"condition","path":"./unexpected_account_activity/scripts/condition.json"}],
   "events":[
   {
     "offset":-900,

@@ -64,7 +64,7 @@
   "throttle_period": "15m",
   "condition": {
     "script": {
-      "inline": "return ctx.payload.aggregations.date_buckets.buckets[ctx.payload.aggregations.date_buckets.buckets.length-1].doc_count > (ctx.payload.aggregations.percentiles.values['90.0']+(ctx.payload.aggregations.stats.std_deviation*3));"
+      "id": "condition"
     }
   },
   "actions": {

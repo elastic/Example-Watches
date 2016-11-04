@@ -6,9 +6,9 @@ This package provides a collection of example  watches.  These watches have been
 
 #Generic Assumptions
 
-* Elasticsearch 5.0rc1
+* Elasticsearch 5.0
 * All watches use the log output for purposes of testing. Replace with output e.g. email, as required.
-* Painless inline script is enabled for clarity and testing only.  All scripts should be moved to hosted script (file or indexed) for production deployment.
+* Painless scripts, located within the "scripts" folder of each watch, must be indexed first.  
 * All watches assume Watcher is running in the same cluster as that in which the relevant data is hosted.  They all therefore use the search input.  In a production deployment this is subject to change i.e. a http input maybe required.
 
 #Structure
@@ -19,13 +19,17 @@ In each watch directory the following is provided:
 * mapping.json - An re-usable mapping which is also appropriate for the test data provided.
 * watch.json - Body of the watch. Used in the below tests. 
 * /tests - Directory of tests.  Each test is defined as JSON file.  See Below.
+* /scripts - Directory of painless scripts utilised by the watch.
+
 
 The parent directory includes the following utility scripts:
 
 * run_test.py - A python script which can be used to run a specific test e.g. python run_test.py --test_file new_process_started/tests/test1.json 
-* load_watch.sh.  Utility script for loading a watch to a local Elasticsearch cluster.  Each watch can be loaded by running load_watch.sh <watch folder name>.
+* load_watch.sh.  Utility script for loading a watch to a local Elasticsearch cluster.  Each watch can be loaded by running load_watch.sh <watch folder name>.  This will also index any scripts. Username and password for the cluster can be specified as parameters e.g.
+load_watch.sh <watch folder name> <username> <password>.  If not specified these default to the x-pack default of "elastic" and "changeme" respectively.
 * run_test.sh - Runs a specified watches tests. Specify watch by directory name e.g. ./run_test.sh port_scan
 * run_all_tests.sh - Runs all tests.
+
 
 #Watches
 
@@ -38,6 +42,7 @@ The parent directory includes the following utility scripts:
 * System Fails to Provide Data - A watch which alerts if a system, which has previously sent data, fails to send events.
 * File System Usage - A watch which alerts if a systems filesystem usage exceeds a predetermined percentage threshold.
 * IO Wait time increases - A watch which alerts if a systems iowait time rises beyond a predetermined threshold.
+
 #Testing
 
 Each watch includes a test directory containing a set of tests expressed as JSON files.  Each JSON file describes a single isolated test and includes:
@@ -53,13 +58,14 @@ Each watch includes a test directory containing a set of tests expressed as JSON
 The run_test.py performs the following when running a test file:
 
 1. Deletes the index specified.
-2. Loads the required mapping.
-3. Loads any declared ingest pipeline used to modify the test data.
-4. Loads the dataset, setting the timestamps of the events to the current+offset.
-5. Refreshes the index.
-6. Adds the watch
-7. Executes the watch
-8. Confirms the watch matches the intended outcome. matched and confirms the output of the watch (log text)
+1. Loads the required mapping.
+1. Loads any required scripts.
+1. Loads any declared ingest pipeline used to modify the test data.
+1. Loads the dataset, setting the timestamps of the events to the current+offset.
+1. Refreshes the index.
+1. Adds the watch
+1. Executes the watch
+1. Confirms the watch matches the intended outcome. matched and confirms the output of the watch (log text)
 
 ##Requirements
 

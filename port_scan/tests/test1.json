@@ -5,6 +5,7 @@
   "type":"connection",
   "match": true,
   "watch_file":"./port_scan/watch.json",
+  "scripts":[{"name":"log_transform","path":"./port_scan/scripts/log_transform.json"},{"name":"index_transform","path":"./port_scan/scripts/index_transform.json"},{"name":"condition","path":"./port_scan/scripts/condition.json"}],
   "comments":"Functional test only.  Makes 2 connections per min from hostA to hostB on unique ports for 30 mins to establish baseline..  In the last min makes 20 connections to host B.",
   "events":[
   {

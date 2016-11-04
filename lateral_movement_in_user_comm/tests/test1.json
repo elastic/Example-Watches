@@ -6,6 +6,10 @@
   "ingest_pipeline_file":"./lateral_movement_in_user_comm/ingest.json",
   "watch_file":"./lateral_movement_in_user_comm/watch.json",
   "comments":"Functional test only.  Tests when a new user logins into a server (UserB), when a user logs into a server at a new time period (UserA). UserC should not alert",
+  "scripts":[{"name":"transform","path":"./lateral_movement_in_user_comm/scripts/transform.json"},
+  {"name":"lower_time","path":"./lateral_movement_in_user_comm/scripts/lower_time.json"},
+  {"name":"condition","path":"./lateral_movement_in_user_comm/scripts/condition.json"},
+  {"name":"upper_time","path":"./lateral_movement_in_user_comm/scripts/upper_time.json"}],
   "events":[
   {
     "user_server":"userA_serverA",
