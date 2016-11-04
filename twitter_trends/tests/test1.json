@@ -6,6 +6,7 @@
   "match": true,
   "watch_file":"./twitter_trends/watch.json",
   "comments":"Functional test only.  Adds an event every 5 mins for 2hrs, before adding 5 events in the last 5 mins.",
+  "scripts":[{"name":"condition","path":"./twitter_trends/scripts/condition.json"}],
   "events":[
   {
     "offset":-7200,

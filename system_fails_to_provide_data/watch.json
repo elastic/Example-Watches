@@ -58,7 +58,7 @@
   },
   "condition": {
     "script": {
-      "inline": "return ctx.payload.aggregations.periods.buckets.history.hosts.buckets.size() > ctx.payload.aggregations.periods.buckets.last_period.hosts.buckets.size();"
+      "id": "condition"
     }
   },
   "throttle_period": "5m",
@@ -66,7 +66,7 @@
     "log": {
       "transform": {
       "script": {
-        "inline":"def last_period=ctx.payload.aggregations.periods.buckets.last_period.hosts.buckets.stream().map(e -> e.key).collect(Collectors.toList()); return ctx.payload.aggregations.periods.buckets.history.hosts.buckets.stream().map(e -> e.key).filter(p -> !last_period.contains(p)).collect(Collectors.toList());"
+        "id":"transform"
       }
     },
       "logging": {

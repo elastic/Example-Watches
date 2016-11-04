@@ -6,6 +6,9 @@
   "match": true,
   "comments":"Functional test only",
   "watch_file":"./cpu_iowait_hosts/watch.json",
+  "scripts":[{"name":"calculate_iowait","path":"./cpu_iowait_hosts/scripts/calculate_iowait.json"},
+    {"name":"condition","path":"./cpu_iowait_hosts/scripts/condition.json"},
+    {"name":"transform","path":"./cpu_iowait_hosts/scripts/transform.json"}],
   "events":[
   {
     "offset":-120,

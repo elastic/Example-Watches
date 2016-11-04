@@ -5,6 +5,7 @@
   "type": "log",
   "match": true,
   "watch_file": "./system_fails_to_provide_data/watch.json",
+  "scripts":[{"name":"transform","path":"./system_fails_to_provide_data/scripts/transform.json"},{"name":"condition","path":"./system_fails_to_provide_data/scripts/condition.json"}],
   "events": [
     {
       "offset": -360,

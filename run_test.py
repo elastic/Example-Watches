@@ -51,6 +51,12 @@ with open(args.test_file,'r') as test_file:
         es.index(index=test['index'],doc_type=test['type'],body=event,id=event['id'] if "id" in event else i,params=params)
         i+=1
     es.indices.refresh(index=test["index"])
+    #Load Scripts
+    if 'scripts' in test:
+        for script in test['scripts']:
+            with open(script['path'], 'r') as script_file:
+                es.index(index="_scripts",doc_type="painless",id=script["name"],body=json.loads(script_file.read()))
+
     #Load Watch and Execute
     watcher = XPackClient(es).watcher
     with open(test['watch_file'],'r') as watch_file:
