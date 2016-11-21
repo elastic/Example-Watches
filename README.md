@@ -1,5 +1,8 @@
 # Example Watches
 
+
+**NO LONGER MAINTAINED. THESE WATCHES HAVE BEEN MOVED TO THE EXAMPLE REPO - SEE https://github.com/elastic/examples/tree/master/Alerting**
+
 ## Overview
 
 This package provides a collection of example  watches.  These watches have been developed for the purposes of POC's and demonstrations.  Each makes independent assumptions as to the data structure, volume and mapping.  For each watch a description, with assumptions is provided, in addition to a mapping file.  Whilst functionally tested, these watches have not been tested for effectiveness or query performance in production environments.  The reader is therefore encouraged to test and review all watches with production data volumes prior to deployment.
